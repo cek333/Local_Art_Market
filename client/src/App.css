@@ -1,0 +1,66 @@
+#root {
+  font-size: 1.2rem;
+  padding: 10px 20px 0px 20px;
+}
+
+/* Header */
+a {
+  text-decoration: none;
+}
+
+.active {
+  font-weight: bold;
+}
+
+.logout {
+  cursor: pointer;
+}
+
+/* Create, Login forms */
+.type {
+  text-transform: capitalize;
+}
+
+.inputForm {
+  display: flex;
+  flex-direction: column;
+  max-width: 500px;
+  margin: 0 auto;
+  /* transform: translateY(5vh); */
+}
+
+.inputForm input,
+.inputForm textarea {
+  margin-bottom: 20px;
+}
+
+input, textarea {
+  font-size: 1.2rem;
+}
+
+.inputForm select {
+  margin-bottom: 5px;
+  margin-left: 5px;
+  font-size: 1rem;
+}
+
+.sameRow {
+  display: flex;
+  justify-content: space-between;
+}
+
+.sideBySide {
+  display: flex;
+}
+
+form button {
+  font-size: 1.2rem;
+}
+
+.successMsg {
+  color: green;
+}
+
+.errorMsg {
+  color: red;
+}
