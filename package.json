@@ -1,0 +1,46 @@
+{
+  "name": "Local_Art_Market",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "if-env NODE_ENV=production && npm run start:prod || npm run start:dev",
+    "start:prod": "node server.js",
+    "start:dev": "concurrently \"nodemon --ignore 'client/*'\" \"npm run client\"",
+    "client": "cd client && npm run start",
+    "install": "cd client && npm install",
+    "build": "cd client && npm run build",
+    "heroku-postbuild": "npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cek333/Local_Art_Market.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cek333/Local_Art_Market/issues"
+  },
+  "devDependencies": {
+    "concurrently": "^4.1.0",
+    "eslint": "^7.17.0",
+    "eslint-config-standard": "^16.0.2",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "nodemon": "^1.18.7"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "connect-mongodb-session": "^2.4.1",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-session": "^1.17.1",
+    "if-env": "^1.0.4",
+    "mongodb": "^3.6.3",
+    "passport": "^0.4.1",
+    "passport-local": "^1.0.0"
+  }
+}
