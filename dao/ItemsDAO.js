@@ -50,10 +50,10 @@ class ItemsDAO {
     );
   }
 
-  static updateQuantity(id, decrement) {
+  static updateQuantity(id, byNum) {
     return items.updateOne(
-      { _id: ObjectId(id) },
-      { $inc: { quantity: (decrement * -1) } }
+      { _id: ObjectId(id), quantity: { $ne: 'unlimited' } },
+      { $inc: { quantity: byNum } }
     );
   }
 
