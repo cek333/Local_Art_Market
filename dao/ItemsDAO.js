@@ -36,9 +36,10 @@ class ItemsDAO {
   }
 
   static updateItem(id, name, quantity, price, picture, description, artistId, artistName, category, location) {
+    // replace document with incoming document
     return items.updateOne(
       { _id: ObjectId(id) },
-      { $set: { name, quantity, price, picture, description, artistId, artistName, category, location } }
+      { name, quantity, price, picture, description, artistId, artistName, category, location }
     );
   }
 
@@ -46,6 +47,13 @@ class ItemsDAO {
     return items.updateMany(
       { artistId: ObjectId(artistId) },
       { $set: { artistName, location } }
+    );
+  }
+
+  static updateQuantity(id, decrement) {
+    return items.updateOne(
+      { _id: ObjectId(id) },
+      { $inc: { quantity: (decrement * -1) } }
     );
   }
 
