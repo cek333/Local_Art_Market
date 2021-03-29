@@ -32,11 +32,11 @@ passport.use(new LocalStrategy(
 function constructUserForPassport(user) {
   const reqUser = { _id: user._id, type: user.type, typeId: user.typeId };
   if (user.type === 'artist') {
-    reqUser.name = user.artistInfo.name;
-    reqUser.location = user.artistInfo.address.location;
+    reqUser.name = user.artistInfo[0].name;
+    reqUser.location = user.artistInfo[0].address.location;
   } else {
-    reqUser.name = user.customerInfo.name;
-    reqUser.location = user.customerInfo.address.location;
+    reqUser.name = user.customerInfo[0].name;
+    reqUser.location = user.customerInfo[0].address.location;
   }
   return reqUser;
 }
