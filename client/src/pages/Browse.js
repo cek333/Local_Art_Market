@@ -28,7 +28,10 @@ function Browse(props) {
         </div>
       </>}
       <h3>Items For Sale</h3>
-      {propsUser.type === 'artist' && <NavLink to='/inventory'>Add Item</NavLink>}
+      {propsUser.type === 'artist' &&
+        propsUser.location === null
+          ? <p className='errorMsg'>'Add Item' disabled. Please complete your profile first.</p>
+          : <NavLink to='/inventory'>Add Item</NavLink>}
       <div>
         {itemList.length === 0 ? <p>There are no art pieces for sale.</p> :
           itemList.map(item =>
