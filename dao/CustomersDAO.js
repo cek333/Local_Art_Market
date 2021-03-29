@@ -15,7 +15,7 @@ class CustomersDAO {
   }
 
   static createProfile() {
-    return customers.insertOne({ });
+    return customers.insertOne({ name: null, address: { location: null } });
   }
 
   static getProfile(id) {
