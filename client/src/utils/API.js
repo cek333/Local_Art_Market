@@ -33,7 +33,7 @@ export default class API {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ...body })
     }
-    fetch(`/api/items`, settings)
+    fetch(`/api/item`, settings)
     .then(res => res.json())
     .then(res => cb(res))
     .catch(err => {
@@ -43,7 +43,7 @@ export default class API {
   }
 
   static getItems(cb) {
-    fetch('/api/items')
+    fetch('/api/item')
     .then(res => res.json())
     .then(res => cb(res))
     .catch(err => {
@@ -53,7 +53,7 @@ export default class API {
   }
 
   static deleteItem(id, cb=noop) {
-    fetch(`/api/items/${id}`, { method: 'delete' })
+    fetch(`/api/item/${id}`, { method: 'delete' })
     .then(res => res.json())
     .then(res => cb(res))
     .catch(err => {
@@ -63,7 +63,7 @@ export default class API {
   }
 
   static getOrders(cb) {
-    fetch('/api/orders')
+    fetch('/api/order')
     .then(res => res.json())
     .then(res => cb(res))
     .catch(err => {
