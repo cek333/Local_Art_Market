@@ -19,7 +19,7 @@ const router = express.Router();
 // });
 
 function constructUserForClient(user) {
-  console.log('constructUserForClient', user);
+  // console.log('constructUserForClient', user);
   if (user) {
     return {
       id: user.typeId,

@@ -38,7 +38,7 @@ router.route('/')
         res.json({ status: false, message: 'Invalid request' });
         return;
       }
-      console.log(result);
+      // console.log(result);
       if (result.modifiedCount === 1) {
         res.json({ status: true, message: 'Profile successfully updated!' });
       } else {
