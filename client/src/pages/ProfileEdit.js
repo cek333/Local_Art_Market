@@ -5,6 +5,7 @@ import API from '../utils/API';
 
 function ProfileEdit(props) {
   const { type: propsType } = props.user;
+  const { updateUser: propsUpdateUser } = props;
   const [ profile, setProfile ] = useState({ name:'', bio:'', address: {location: null} });
   const [ errorMsg, setErrorMsg ] = useState('');
   const history = useHistory();
@@ -31,26 +32,20 @@ function ProfileEdit(props) {
     setProfile({ ...profile, [name]: value });
   }
 
-  function handleSubmit(evt) {
+  function handleAddressChange(evt) {
     clearMessages();
+    const { name, value } = evt.target;
+    const updatedAddress = { ...profile.address };
+    updatedAddress[name] = value;
+    setProfile({ ...profile, address: updatedAddress })
+  }
+
+  function handleSubmit(evt) {
     evt.preventDefault();
-    const form = evt.target;
-    console.log('ProfileEdit form=', form);
-    // https://stackoverflow.com/questions/23139876/getting-all-form-values-by-javascript
-    let reqBody = { address: { } };
-    Object.keys(form.elements).forEach(key => {
-        let element = form.elements[key];
-        if (element.type !== 'submit' && element.type !== 'fieldset') {
-          if (element.name !== 'name' && element.name !== 'bio') {
-            reqBody.address[element.name] = element.value;
-          } else {
-            reqBody[element.name] = element.value;
-          }
-        }
-    });
-    console.log('ProfileEdit formData=', reqBody);
-    API.updateProfile(reqBody, (res) => {
+    clearMessages();
+    API.updateProfile(profile, (res) => {
       if (res.status) {
+        propsUpdateUser();
         history.goBack();
       } else {
         setErrorMsg(res.message);
@@ -75,7 +70,7 @@ function ProfileEdit(props) {
               value={profile.bio} onChange={handleChange} required />
           </>
         }
-        <Address address={profile.address} />
+        <Address address={profile.address} onChange={handleAddressChange} />
         <div>
           <button type='submit'>Update</button>
         </div>
