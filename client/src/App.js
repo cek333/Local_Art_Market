@@ -20,8 +20,11 @@ function App() {
     });
   }, []);
 
-  function updateUser(id='', type='customer', name='', location=null) {
-    setUser({ id, type, name, location });
+  function updateUser() {
+    API.getCurUser((res) => {
+      const { id, type, name, location } = res;
+      setUser({ id, type, name, location });
+    });
   }
 
   let header;
@@ -40,7 +43,7 @@ function App() {
         <Route path='/loginCustomer'><Login type="customer" updateUser={updateUser} /></Route>
         <Route path='/loginArtist'><Login type="artist" updateUser={updateUser} /></Route>
         <Route path='/profileView'><ProfileView user={user} /></Route>
-        <Route path='/profileEdit'><ProfileEdit user={user} /></Route>
+        <Route path='/profileEdit'><ProfileEdit user={user} updateUser={updateUser} /></Route>
         <Route path='/inventory'><AddItem user={user} /></Route>
         <Redirect to='/browse' />
       </Switch>

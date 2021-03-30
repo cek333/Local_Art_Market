@@ -28,7 +28,7 @@ function Login(props) {
       API.updateUser(action, email, password, propsType, (res) => {
         // console.log('[handleSubmit (login)] res=', res);
         if (res.status) {
-          propsUpdateUser(res.id, res.type, res.name, res.location);
+          propsUpdateUser();
           history.push('/');
         } else {
           setErrorMsg(res.message);
