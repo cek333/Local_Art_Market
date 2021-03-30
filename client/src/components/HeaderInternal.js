@@ -24,7 +24,7 @@ function Header(props) {
       <div className='title'>Local Art Market</div>
       <nav>
         <NavLink to='/browse' activeClassName='active'>Browse</NavLink>
-        <NavLink to='/profile' activeClassName='active'>Profile</NavLink>
+        <NavLink to='/profileView' activeClassName='active'>Profile</NavLink>
         <span className='logout' onClick={handleLogout}>Logout</span>
       </nav>
     </header>

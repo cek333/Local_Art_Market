@@ -8,7 +8,7 @@ passport.use(new LocalStrategy(
   // Our user will sign in using an email, rather than a "username"
   {
     usernameField: 'email',
-    passReqToCallback: true,
+    passReqToCallback: true
   },
   async function(req, email, password, done) {
     // When a user tries to sign in this code runs
@@ -19,7 +19,8 @@ passport.use(new LocalStrategy(
     } else {
       // Note: dbUser.password is the hashed password
       if (bcrypt.compareSync(password, dbUser.password)) {
-        done(null, dbUser);
+        const reqUser = constructUserForPassport(dbUser);
+        done(null, reqUser);
       } else {
         // password check failed
         done(null, false, { message: 'Incorrect password!' });
@@ -27,6 +28,18 @@ passport.use(new LocalStrategy(
     }
   }
 ));
+
+function constructUserForPassport(user) {
+  const reqUser = { _id: user._id, type: user.type, typeId: user.typeId };
+  if (user.type === 'artist') {
+    reqUser.name = user.artistInfo[0].name;
+    reqUser.location = user.artistInfo[0].address.location;
+  } else {
+    reqUser.name = user.customerInfo[0].name;
+    reqUser.location = user.customerInfo[0].address.location;
+  }
+  return reqUser;
+}
 
 // Sequelize/Deserialize logic
 passport.serializeUser(function(user, done) {
@@ -36,7 +49,8 @@ passport.serializeUser(function(user, done) {
 passport.deserializeUser(async function(id, done) {
   // Get user from database
   const dbUser = await UsersDAO.getUserById(id);
-  done(null, dbUser);
+  const reqUser = constructUserForPassport(dbUser);
+  done(null, reqUser);
 });
 
 // Exporting our configured passport

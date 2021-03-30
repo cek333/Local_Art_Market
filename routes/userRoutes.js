@@ -1,48 +1,45 @@
-const UsersDAO = require('../dao/UsersDAO');
-const ArtistsDAO = require('../dao/ArtistsDAO');
-const CustomersDAO = require('../dao/CustomersDAO');
+const customSignup = require('../middleware/customSignup');
 const customAuth = require('../middleware/customPassportAuthenticate');
 const express = require('express');
 const router = express.Router();
-const bcrypt = require('bcryptjs');
+
+// const UsersDAO = require('../dao/UsersDAO');
+// router.post('/test_id', async function(req, res) {
+//   const result = await UsersDAO.getUserById(req.body.id);
+//   console.log('user_by_id', result);
+//   res.json({ status: true, message: "Test by Id Success!" });
+// });
+
+// router.post('/test_email', async function(req, res) {
+//   const email = req.body.email;
+//   const type = req.body.type;
+//   const result = await UsersDAO.getUserByEmail(email, type);
+//   console.log('user_by_email', result);
+//   res.json({ status: true, message: "Test by Email Success!" });
+// });
+
+function constructUserForClient(user) {
+  console.log('constructUserForClient', user);
+  if (user) {
+    return {
+      id: user.typeId,
+      type: user.type,
+      name: user.name,
+      location: user.location
+    };
+  } else {
+    return { id: '', type: 'customer', name: '', location: null };
+  }
+}
 
 // Using the passport.authenticate middleware with our local strategy.
 router.post('/login', customAuth, function(req, res) {
-  res.json({ status: true, id: req.user._id, type: req.user.type, message: "You're now logged in!" });
+  res.json({ status: true, ...constructUserForClient(req.user), message: "You're now logged in!" });
 });
 
 // Route for signing up a user.
-router.post('/signup', async function(req, res, next) {
-  const hashedPswd = bcrypt.hashSync(req.body.password, 10);
-  const email = req.body.email;
-  const type = req.body.type;
-  let result;
-  try {
-    const checkUser = await UsersDAO.getUserByEmail(email, type);
-    if (checkUser) {
-      return res.status(400).json({ status: false, message: 'Email already exists! Login instead.' });
-    }
-    if (type === 'artist') {
-      result = await ArtistsDAO.createProfile();
-    } else {
-      result = await CustomersDAO.createProfile();
-    }
-    const newId = result.insertedId;
-    result = await UsersDAO.addUser(email, hashedPswd, type, newId);
-    // newUser = await UsersDAO.getUserById(newId);
-    const newUser = result.ops[0];
-    console.log('signup, new user:', newUser);
-    req.logIn(newUser, function(err) {
-      if (err) {
-        next(err);
-      } else {
-        res.json({ status: true, id: newUser._id, type: newUser.type, message: "You're now logged in!" });
-      }
-    });
-  } catch (e) {
-    console.error(`Error occurred while adding new user, ${e}`);
-    res.status(400).json({ status: false, message: 'Unknown error on signup.' });
-  }
+router.post('/signup', customSignup, customAuth, function(req, res) {
+  res.json({ status: true, ...constructUserForClient(req.user), message: "You're now logged in!" });
 });
 
 // Route for logging user out
@@ -60,11 +57,7 @@ router.post('/logout', function(req, res) {
 
 // Get current logged in user
 router.get('/fetch', function(req, res) {
-  if (req.user) {
-    res.json({ status: true, id: req.user._id, type: req.user.type });
-  } else {
-    res.json({ status: false, id: '', type: '' });
-  }
+  res.json({ status: true, ...constructUserForClient(req.user) });
 });
 
 module.exports = router;

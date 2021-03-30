@@ -7,7 +7,7 @@ router.route('/:id?')
     try {
       let result;
       if (req.user && req.user.type === 'artist') {
-        result = await ItemsDAO.getItemsByArtist(req.user._id);
+        result = await ItemsDAO.getItemsByArtist(req.user.typeId);
       } else {
         result = await ItemsDAO.getItems();
       }
@@ -21,13 +21,35 @@ router.route('/:id?')
   .post(async function(req, res) {
     try {
       console.log('post /api/items/:', req.body);
-      const { name, quantity, price, picture='', description, artistMoniker='', categories } = req.body;
-      await ItemsDAO.addItem(name, quantity, price, picture, description, req.user._id, artistMoniker, categories);
+      const { name, quantity, price, picture, description, category } = req.body;
+      await ItemsDAO.addItem(name, quantity, price, picture, description,
+        req.user.typeId, req.user.name, category, req.user.location);
       res.json({ status: true, message: 'Item successfully added!' });
     } catch (e) {
       // Unexpected error
       console.error(`Error occurred while adding item, ${e}`);
       res.status(500).json({ status: false, message: 'Error occurred while adding item!' });
+    }
+  })
+  .put(async function(req, res) {
+    if (req.params.id) {
+      try {
+        const { name, quantity, price, picture, description, category } = req.body;
+        const result = await ItemsDAO.updateItem(name, quantity, price, picture, description,
+          req.user.typeId, req.user.name, category, req.user.location);
+        if (result.nModified === 1) {
+          res.json({ status: true, message: 'Item successfully updated!' });
+        } else {
+          // Set status to 400: Bad Request
+          res.status(400).json({ status: false, message: 'Item ID not found!' });
+        }
+      } catch (e) {
+        // Unexpected error
+        res.status(500).json({ status: false, message: 'Error occurred while updating item!' });
+      }
+    } else {
+      // Valid id not specified
+      res.status(400).json({ status: false, message: 'Please specify item ID!' });
     }
   })
   .delete(async function(req, res) {

@@ -52,9 +52,13 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Requiring our routes
+const infoRoutes = require('./routes/infoRoutes');
 const itemRoutes = require('./routes/itemRoutes');
+const orderRoutes = require('./routes/orderRoutes');
 const userRoutes = require('./routes/userRoutes');
-app.use('/api/items', itemRoutes);
+app.use('/api/info', infoRoutes);
+app.use('/api/item', itemRoutes);
+app.use('/api/order', orderRoutes);
 app.use('/api/user', userRoutes);
 
 // If no API routes are hit, send the React app

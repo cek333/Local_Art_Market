@@ -1,6 +1,7 @@
 const { ObjectId } = require('bson');
 
 let orders;
+const ONE_WEEK = 1000 * 60 * 60 * 24 * 7;
 
 class OrdersDAO {
   static async injectDB(conn) {
@@ -14,42 +15,54 @@ class OrdersDAO {
     }
   }
 
-  static addOrder(items, total, customerId, customerEmail, artistId, artistMoniker) {
-    return items.insertOne({
-      items, total, customerId, customerEmail, artistId, artistMoniker,
-      dateOrdered: Date.now(), dateFulfiled: null, status: "Pending"
-     });
+  static addOrder(items, total, customerId, customerName, artistId, artistName) {
+    return orders.insertOne({
+      items, total, customerId, customerName, artistId, artistName,
+      dateOrdered: Date.now(), dateFulfilled: null, status: 'Pending'
+    });
   }
 
   static markOrderComplete(id) {
-    return items.updateOne(
+    return orders.updateOne(
       { _id: ObjectId(id) },
-      { $set: { dateFulfiled: Date.now(), status: "Complete" } }
+      { $set: { dateFulfilled: Date.now(), status: 'Complete' } }
     );
   }
 
   static findOrder(id) {
-    return items.findOne({ _id: ObjectId(id) });
+    return orders.findOne({ _id: ObjectId(id) });
   }
 
-  static findOrdersByArtist(id) {
-    return items.find({ artistId: ObjectId(id), status: "Pending" }).toArray();
+  static findOrdersByArtist(artistId) {
+    return orders.find({
+      artistId: ObjectId(artistId),
+      $or: [
+        { dateOrdered: { $gt: Date.now() - ONE_WEEK } },
+        { status: 'Pending' }
+      ]
+    }).toArray();
   }
 
-  static findOrdersByCustomer(id) {
-    return items.find({ customerId: ObjectId(id), status: "Pending" }).toArray();
+  static findOrdersByCustomer(customerId) {
+    return orders.find({
+      customerId: ObjectId(customerId),
+      $or: [
+        { dateOrdered: { $gt: Date.now() - ONE_WEEK } },
+        { status: 'Pending' }
+      ]
+    }).toArray();
   }
 
-  static findOrdersByArtistIncludeCompleted(id) {
-    return items.find({ artistId: ObjectId(id) }).toArray();
+  static findOrdersByArtistIncludeCompleted(artistId) {
+    return orders.find({ artistId: ObjectId(artistId) }).toArray();
   }
 
-  static findOrdersByCustomerIncludeCompleted(id) {
-    return items.find({ customerId: ObjectId(id) }).toArray();
+  static findOrdersByCustomerIncludeCompleted(customerId) {
+    return orders.find({ customerId: ObjectId(customerId) }).toArray();
   }
 
   static deleteOrder(id) {
-    return items.deleteOne({ _id: ObjectId(id) });
+    return orders.deleteOne({ _id: ObjectId(id) });
   }
 }
 
