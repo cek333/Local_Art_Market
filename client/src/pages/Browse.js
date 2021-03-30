@@ -12,6 +12,17 @@ function Browse(props) {
     // API.getOrders((res) => setOrderList(res));
   }, [])
 
+  let addItemLink;
+  if (propsUser.type === 'artist') {
+    if (propsUser.location === null) {
+      addItemLink = <p className='errorMsg'>'Add Item' disabled. Please complete your profile first.</p>;
+    } else {
+      addItemLink = <NavLink to='/inventory'>Add Item</NavLink>;
+    }
+  } else {
+    addItemLink = <></>;
+  }
+
   return (
     <div>
       {propsUser.id !== '' &&
@@ -28,10 +39,7 @@ function Browse(props) {
         </div>
       </>}
       <h3>Items For Sale</h3>
-      {propsUser.type === 'artist' &&
-        propsUser.location === null
-          ? <p className='errorMsg'>'Add Item' disabled. Please complete your profile first.</p>
-          : <NavLink to='/inventory'>Add Item</NavLink>}
+      {addItemLink}
       <div>
         {itemList.length === 0 ? <p>There are no art pieces for sale.</p> :
           itemList.map(item =>
