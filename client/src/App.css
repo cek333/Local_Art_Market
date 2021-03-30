@@ -1,3 +1,20 @@
+/* form defaults. Recommended by Mozilla MDN */
+button,
+input,
+select,
+textarea {
+  font-family : inherit;
+  font-size : 100%;
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  margin-bottom: 10px;
+}
+
+label {
+  padding-right: 5px;
+}
+
 #root {
   font-size: 1.2rem;
   padding: 10px 20px 0px 20px;
@@ -8,7 +25,8 @@ a {
   text-decoration: none;
 }
 
-.active {
+.active,
+.heading {
   font-weight: bold;
 }
 
@@ -21,27 +39,15 @@ a {
   text-transform: capitalize;
 }
 
-.inputForm {
+.box {
   display: flex;
   flex-direction: column;
   max-width: 500px;
-  margin: 0 auto;
   /* transform: translateY(5vh); */
 }
 
-.inputForm input,
-.inputForm textarea {
-  margin-bottom: 20px;
-}
-
-input, textarea {
-  font-size: 1.2rem;
-}
-
-.inputForm select {
-  margin-bottom: 5px;
-  margin-left: 5px;
-  font-size: 1rem;
+.box_center {
+  margin: 0 auto;
 }
 
 .sameRow {
@@ -53,14 +59,16 @@ input, textarea {
   display: flex;
 }
 
-form button {
-  font-size: 1.2rem;
-}
-
 .successMsg {
   color: green;
 }
 
 .errorMsg {
   color: red;
+}
+
+dl {
+  border: 1px solid grey;
+  margin-top: 0px;
+  padding: 5px;
 }

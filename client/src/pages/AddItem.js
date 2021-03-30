@@ -44,31 +44,36 @@ function AddItem(props) {
   }
 
   return (
-    <form className='inputForm' onSubmit={handleSubmit}>
-      <label htmlFor='name'>Name</label>
-      <input type='text' name='name' id='name'
-            placeholder='name' required />
-      <label htmlFor='quantity'>Quantity</label>
-      <input type='number' name='quantity' id='quantity'
-            placeholder='1' required min='0' />
-      <label htmlFor='price'>Price</label>
-      <input type='number' name='price' id='price'
-            placeholder='25.00' required min='0' />
-      <label htmlFor='description'>Description</label>
-      <textarea name='description' id='description'
-            placeholder='Description' required />
-      <label htmlFor="categories">Category</label>
-      <select id="categories" name="categories" multiple required>
-        <option value="portrait">portrait</option>
-        <option value="abstract">abstract</option>
-        <option value="photography">photography</option>
-        <option value="sculpture">sculpture</option>
-        <option value="painting">painting</option>
-      </select> 
-      <button type='submit'>Add Item</button>
-      <p className='successMsg'>{successMsg}</p>
-      <p className='errorMsg'>{errorMsg}</p>
-    </form>
+    <div className='box box_center'>
+      <form className='box' onSubmit={handleSubmit}>
+        <label htmlFor='name'>Name</label>
+        <input type='text' name='name' id='name'
+              placeholder='name' required />
+        <label htmlFor='quantity'>Quantity</label>
+        <input type='number' name='quantity' id='quantity'
+              placeholder='1' required min='0' />
+        <label htmlFor='price'>Price</label>
+        <input type='number' name='price' id='price'
+              placeholder='25.00' required min='0' />
+        <label htmlFor='description'>Description</label>
+        <textarea name='description' id='description'
+              placeholder='Description' required />
+        <label htmlFor="categories">Category</label>
+        <select id="categories" name="categories" multiple required>
+          <option value="portrait">portrait</option>
+          <option value="abstract">abstract</option>
+          <option value="photography">photography</option>
+          <option value="sculpture">sculpture</option>
+          <option value="painting">painting</option>
+        </select> 
+        <button type='submit'>Add Item</button>
+        <p className='successMsg'>{successMsg}</p>
+        <p className='errorMsg'>{errorMsg}</p>
+      </form>
+      <div>
+        <button type='button' onClick={() => history.goBack()}>Back</button>
+      </div>
+    </div>
   );
 }
 
