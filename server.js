@@ -52,13 +52,11 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Requiring our routes
-const artistRoutes = require('./routes/artistRoutes');
-const customerRoutes = require('./routes/customerRoutes');
+const infoRoutes = require('./routes/infoRoutes');
 const itemRoutes = require('./routes/itemRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const userRoutes = require('./routes/userRoutes');
-app.use('/api/artist', artistRoutes);
-app.use('/api/customer', customerRoutes);
+app.use('/api/info', infoRoutes);
 app.use('/api/item', itemRoutes);
 app.use('/api/order', orderRoutes);
 app.use('/api/user', userRoutes);
