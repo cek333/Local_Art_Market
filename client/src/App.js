@@ -4,20 +4,24 @@ import HeaderDefault from './components/HeaderDefault';
 import HeaderInternal from './components/HeaderInternal';
 import Login from './pages/Login';
 import Browse from './pages/Browse';
-import Profile from './pages/Profile';
+import ProfileEdit from './pages/ProfileEdit';
+import ProfileView from './pages/ProfileView';
 import AddItem from './pages/AddItem';
 import API from './utils/API';
 import './App.css';
 
 function App() {
-  const [ user, setUser ] = useState({ id: '', type: '' });
+  const [ user, setUser ] = useState({ id: '', type: 'customer', name: '', location: null });
 
   useEffect(function() {
-    API.getCurUser((res) => setUser({ ...res }));
+    API.getCurUser((res) => {
+      const { id, type, name, location } = res;
+      setUser({ id, type, name, location });
+    });
   }, []);
 
-  function updateUser(id='', type='') {
-    setUser({ id, type });
+  function updateUser(id='', type='customer', name='', location=null) {
+    setUser({ id, type, name, location });
   }
 
   let header;
@@ -35,7 +39,8 @@ function App() {
         <Route path='/browse'><Browse user={user} /></Route>
         <Route path='/loginCustomer'><Login type="customer" updateUser={updateUser} /></Route>
         <Route path='/loginArtist'><Login type="artist" updateUser={updateUser} /></Route>
-        <Route path='/profile'><Profile user={user} /></Route>
+        <Route path='/profileView'><ProfileView user={user} /></Route>
+        <Route path='/profileEdit'><ProfileEdit user={user} /></Route>
         <Route path='/inventory'><AddItem user={user} /></Route>
         <Redirect to='/browse' />
       </Switch>

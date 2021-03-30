@@ -28,7 +28,7 @@ function Login(props) {
       API.updateUser(action, email, password, propsType, (res) => {
         // console.log('[handleSubmit (login)] res=', res);
         if (res.status) {
-          propsUpdateUser(res.id, res.type);
+          propsUpdateUser(res.id, res.type, res.name, res.location);
           history.push('/');
         } else {
           setErrorMsg(res.message);
@@ -38,20 +38,22 @@ function Login(props) {
   }
 
   return (
-    <form className='inputForm' onSubmit={handleSubmit}>
-      <h3><span className="type">{propsType}</span> Login</h3>
-      <label htmlFor='email'>Email</label>
-      <input type='text' ref={emailInput} name='email' id='email'
-            placeholder='email' required onChange={clearMessages} />
-      <label htmlFor='password'>Password</label>
-      <input type='password' ref={pswdInput} name='password' id='password'
-            placeholder='password' required onChange={clearMessages} />
-      <div className='sameRow'>
-        <button type='submit' onClick={handleSubmit} value='login'>Login In</button>
-        <button type='submit' onClick={handleSubmit} value='signup'>Sign Up</button>
-      </div>
-      <p className='errorMsg'>{errorMsg}</p>
-    </form>
+    <div className='box box_center'>
+      <h4><span className="type">{propsType}</span> Login</h4>
+      <form className='box' onSubmit={handleSubmit}>
+        <label htmlFor='email'>Email</label>
+        <input type='text' ref={emailInput} name='email' id='email'
+              placeholder='email' required onChange={clearMessages} />
+        <label htmlFor='password'>Password</label>
+        <input type='password' ref={pswdInput} name='password' id='password'
+              placeholder='password' required onChange={clearMessages} />
+        <div className='sameRow'>
+          <button type='submit' onClick={handleSubmit} value='login'>Login In</button>
+          <button type='submit' onClick={handleSubmit} value='signup'>Sign Up</button>
+        </div>
+        <p className='errorMsg'>{errorMsg}</p>
+      </form>
+    </div>
   );
 }
 

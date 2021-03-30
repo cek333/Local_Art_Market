@@ -19,6 +19,7 @@ const router = express.Router();
 // });
 
 function constructUserForClient(user) {
+  console.log('constructUserForClient', user);
   if (user) {
     return {
       id: user.typeId,
@@ -27,7 +28,7 @@ function constructUserForClient(user) {
       location: user.location
     };
   } else {
-    return { id: '', type: '', name: '', location: null };
+    return { id: '', type: 'customer', name: '', location: null };
   }
 }
 
