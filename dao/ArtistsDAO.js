@@ -15,7 +15,7 @@ class ArtistsDAO {
   }
 
   static createProfile() {
-    return artists.insertOne({ name: null, bio: null, address: { location: null } });
+    return artists.insertOne({ name: '', bio: '', address: { location: null } });
   }
 
   static getProfile(id) {
