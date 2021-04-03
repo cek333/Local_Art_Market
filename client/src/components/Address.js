@@ -15,7 +15,9 @@ function Address(props) {
                                              postalcode, country, phone_number });
 
   useEffect(function() {
-    setAddress({ ...props.address });
+    if (props.address.location !== null) {
+      setAddress({ ...props.address });
+    }
   }, [props]);
 
   return (

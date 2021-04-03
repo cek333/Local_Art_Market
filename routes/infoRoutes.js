@@ -3,23 +3,29 @@ const CustomersDAO = require('../dao/CustomersDAO');
 const express = require('express');
 const router = express.Router();
 
-router.route('/')
+router.route('/:id?')
   .get(async function(req, res) {
     try {
       let result;
-      if (req.user && req.user.type === 'artist') {
-        result = await ArtistsDAO.getProfile(req.user.typeId);
-      } else if (req.user && req.user.type === 'customer') {
-        result = await CustomersDAO.getProfile(req.user.typeId);
+      if (req.params.id) {
+        // customer requesting artist's bio
+        result = await ArtistsDAO.getProfile(req.params.id);
+        res.json({ status: true, name: result.name, bio: result.bio });
       } else {
-        res.json({ status: false, message: 'Invalid request' });
-        return;
+        if (req.user && req.user.type === 'artist') {
+          result = await ArtistsDAO.getProfile(req.user.typeId);
+        } else if (req.user && req.user.type === 'customer') {
+          result = await CustomersDAO.getProfile(req.user.typeId);
+        } else {
+          res.json({ status: false, message: 'Invalid request' });
+          return;
+        }
+        const clientInfo = { name: result.name, address: result.address };
+        if (req.user.type === 'artist') {
+          clientInfo.bio = result.bio;
+        }
+        res.json({ status: true, ...clientInfo });
       }
-      const clientInfo = { name: result.name, address: result.address };
-      if (req.user.type === 'artist') {
-        clientInfo.bio = result.bio;
-      }
-      res.json({ status: true, ...clientInfo });
     } catch (e) {
       console.error(`Error occurred while getting user's profile, ${e}`);
       res.json({ status: false, message: "Unable to fetch user's profile." });

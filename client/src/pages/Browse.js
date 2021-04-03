@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
+import ListItem from '../components/ListItem';
 import API from '../utils/API';
 
 function Browse(props) {
@@ -41,11 +42,9 @@ function Browse(props) {
       <h3>Items For Sale</h3>
       {addItemLink}
       <div>
-        {itemList.length === 0 ? <p>There are no art pieces for sale.</p> :
-          itemList.map(item =>
-            <div key={item._id}>
-              <p>{item.name}, {item.description}</p>
-            </div>)
+        {itemList.length === 0
+          ? <p>There are no art pieces for sale.</p>
+          : itemList.map(item => <ListItem key={item._id} type={propsUser.type} item={item} />)
         }
       </div>
     </div>

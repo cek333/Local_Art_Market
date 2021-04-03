@@ -11,6 +11,10 @@ textarea {
   margin-bottom: 10px;
 }
 
+input, textarea {
+  padding: 3px;
+}
+
 label {
   padding-right: 5px;
 }
@@ -67,8 +71,26 @@ a {
   color: red;
 }
 
-dl {
+/* Browse Page */
+.list-item {
   border: 1px solid grey;
-  margin-top: 0px;
-  padding: 5px;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  padding: 10px;
+}
+
+.list-item-button {
+  float: right;
+  margin-left: 10px;
+}
+
+.list-item p {
+  margin: 0px;
+}
+
+img {
+  width: 200px;
+  height: 200px;
+  object-fit: contain;
+  margin-right: 10px;
 }

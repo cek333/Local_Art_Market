@@ -51,6 +51,10 @@ export default class API {
     fetchJSON('/api/info', cb);
   }
 
+  static getArtistProfile(artistId, cb) {
+    fetchJSON(`/api/info/${artistId}`, cb);
+  }
+
   static updateProfile(body, cb) {
     fetchJSON('/api/info', cb, 'put', body);
   }
