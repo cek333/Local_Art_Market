@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useHistory, useParams } from 'react-router-dom';
 import Radio from '../components/Radio';
 import API from '../utils/API';
 
-function AddItem(props) {
+function ModifyItem(props) {
   const CATEGORIES = ['prints', 'drawing & illustration', 'painting', 'photography', 'sculpture',
     'dolls & miniatures', 'textiles', 'mixed media & collage', 'cermaics', 'glass art', 'other'];
   const [ errorMsg, setErrorMsg ] = useState('');
@@ -12,8 +12,17 @@ function AddItem(props) {
     name: '', quantity: 1, price: '25.00', picture: 'https://via.placeholder.com/200',
     description: '', category: 'other'
   });
+  const [ action, setAction ] = useState('edit');
   const history = useHistory();
-  // const { type: propsType, updateUser: propsUpdateUser } = props;
+  const { itemId } = useParams();
+
+  useEffect(function() {
+    if (itemId) {
+      console.log('itemId found');
+    } else {
+      console.log('itemId not found');
+    }
+  }, [itemId]);
 
   function clearMessages() {
     setErrorMsg('');
@@ -44,6 +53,7 @@ function AddItem(props) {
     });
   }
 
+  console.log('ModifyItem', itemId);
   return (
     <div className='box box_center'>
       <form className='box' onSubmit={handleSubmit}>
@@ -82,4 +92,4 @@ function AddItem(props) {
   );
 }
 
-export default AddItem;
+export default ModifyItem;
