@@ -28,7 +28,7 @@ function constructUserForClient(user) {
       location: user.location
     };
   } else {
-    return { id: '', type: 'customer', name: '', location: null };
+    return { id: '', type: 'none', name: '', location: null };
   }
 }
 
