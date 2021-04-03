@@ -6,12 +6,13 @@ import Login from './pages/Login';
 import Browse from './pages/Browse';
 import ProfileEdit from './pages/ProfileEdit';
 import ProfileView from './pages/ProfileView';
-import AddItem from './pages/AddItem';
+import ProfileBio from './pages/ProfileBio';
+import ModifyItem from './pages/ModifyItem';
 import API from './utils/API';
 import './App.css';
 
 function App() {
-  const [ user, setUser ] = useState({ id: '', type: 'customer', name: '', location: null });
+  const [ user, setUser ] = useState({ id: '', type: 'none', name: '', location: null });
 
   useEffect(function() {
     API.getCurUser((res) => {
@@ -44,7 +45,8 @@ function App() {
         <Route path='/loginArtist'><Login type="artist" updateUser={updateUser} /></Route>
         <Route path='/profileView'><ProfileView user={user} /></Route>
         <Route path='/profileEdit'><ProfileEdit user={user} updateUser={updateUser} /></Route>
-        <Route path='/inventory'><AddItem user={user} /></Route>
+        <Route path='/artist/:artistId'><ProfileBio /></Route>
+        <Route path='/inventory/:itemId?'><ModifyItem /></Route>
         <Redirect to='/browse' />
       </Switch>
     </Router>
