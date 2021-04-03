@@ -6,7 +6,9 @@ import API from '../utils/API';
 function ProfileEdit(props) {
   const { type: propsType } = props.user;
   const { updateUser: propsUpdateUser } = props;
-  const [ profile, setProfile ] = useState({ name:'', bio:'', address: {location: null} });
+  const [ profile, setProfile ] = useState({ name:'', bio:'', address: {
+      address_1:'', address_2:'', city:'', province:'', postalcode:'',
+      country:'', phone_number:'', location:null }});
   const [ errorMsg, setErrorMsg ] = useState('');
   const history = useHistory();
 
@@ -14,8 +16,20 @@ function ProfileEdit(props) {
     API.getProfile((res) => {
       if (res.status) {
         // Ignore the bio field for customers
-        const { name, address, bio = '' } = res;
-        setProfile({ name, address, bio });
+        const { name, bio = '', address: {
+          address_1 = '',
+          address_2 = '',
+          city = '',
+          province = '',
+          postalcode = '',
+          country ='',
+          phone_number = '',
+          location = null
+        } } = res;
+        setProfile({ name, bio, address: {
+          address_1, address_2, city, province, postalcode,
+          country, phone_number, location
+        } });
       } else {
         setErrorMsg(res.message);
       }
