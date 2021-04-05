@@ -12,15 +12,26 @@ function ModifyItem(props) {
     name: '', quantity: 1, price: '25.00', picture: 'https://via.placeholder.com/200',
     description: '', category: 'other'
   });
-  const [ action, setAction ] = useState('edit');
+  const [ action, setAction ] = useState('Add');
   const history = useHistory();
   const { itemId } = useParams();
 
   useEffect(function() {
     if (itemId) {
-      console.log('itemId found');
-    } else {
-      console.log('itemId not found');
+      setAction('Update');
+      API.getItem(itemId, (res) => {
+        if (res.status) {
+          let { name='', quantity=1, price='25.00', picture='https://via.placeholder.com/200',
+            description='', category='other' } = res;
+          // Convert price to string
+          if (typeof price === 'number') {
+            price = price.toFixed(2).toString();
+          }
+          setItemProperties({ name, quantity, price, picture, description, category });
+        } else {
+          setErrorMsg(res.message);
+        }
+      });
     }
   }, [itemId]);
 
@@ -30,6 +41,7 @@ function ModifyItem(props) {
   }
 
   function handleChange(evt) {
+    clearMessages();
     const { name, value } = evt.target;
     setItemProperties({ ...itemProperties, [name]: value });
   }
@@ -37,20 +49,29 @@ function ModifyItem(props) {
   function handleSubmit(evt) {
     evt.preventDefault();
     clearMessages();
-    console.log('AddItem handleSubmit:', itemProperties);
     const reqBody = {...itemProperties};
     // Convert quantity/amt from string to numbers
     if (reqBody.quantity !== 'unlimited') {
       reqBody.quantity = Number(reqBody.quantity);
     }
     reqBody.price = Number(reqBody.price);
-    API.addItem(reqBody, (res) => {
-      if (res.status) {
-        setSuccessMsg(res.message);
-      } else {
-        setErrorMsg(res.message);
-      }
-    });
+    if (action === 'Add') {
+      API.addItem(reqBody, (res) => {
+        if (res.status) {
+          setSuccessMsg(res.message);
+        } else {
+          setErrorMsg(res.message);
+        }
+      });
+    } else {
+      API.updateItem(itemId, reqBody, (res) => {
+        if (res.status) {
+          setSuccessMsg(res.message);
+        } else {
+          setErrorMsg(res.message);
+        }
+      });
+    }
   }
 
   console.log('ModifyItem', itemId);
@@ -81,7 +102,7 @@ function ModifyItem(props) {
             );
           })}
         </fieldset>
-        <button type='submit'>Add Item</button>
+        <button type='submit'>{action} Item</button>
         <p className='successMsg'>{successMsg}</p>
         <p className='errorMsg'>{errorMsg}</p>
       </form>

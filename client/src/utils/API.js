@@ -33,8 +33,18 @@ export default class API {
     fetchJSON('/api/item', cb, 'post', body);
   }
 
+  static updateItem(itemId, body, cb=noop) {
+    fetchJSON(`/api/item/${itemId}`, cb, 'put', body);
+  }
+
+  // Get all items (for customer), or list of items by artist (for artist)
   static getItems(cb) {
     fetchJSON('/api/item', cb);
+  }
+
+  // Get (single) item by itemId
+  static getItem(itemId, cb) {
+    fetchJSON(`/api/item/${itemId}`, cb);
   }
 
   static deleteItem(id, cb=noop) {

@@ -6,12 +6,21 @@ router.route('/:id?')
   .get(async function(req, res) {
     try {
       let result;
-      if (req.user && req.user.type === 'artist') {
-        result = await ItemsDAO.getItemsByArtist(req.user.typeId);
+      if (req.params.id) {
+        result = await ItemsDAO.getItemById(req.params.id);
+        if (result) {
+          res.json({ status: true, ...result });
+        } else {
+          res.json({ status: false, message: 'Item not found' });
+        }
       } else {
-        result = await ItemsDAO.getItems();
+        if (req.user && req.user.type === 'artist') {
+          result = await ItemsDAO.getItemsByArtist(req.user.typeId);
+        } else {
+          result = await ItemsDAO.getItems();
+        }
+        res.json(result);
       }
-      res.json(result);
     } catch (e) {
       console.error(`Error occurred while getting items, ${e}`);
       // Return empty array
@@ -20,7 +29,7 @@ router.route('/:id?')
   })
   .post(async function(req, res) {
     try {
-      console.log('post /api/items/:', req.body);
+      // console.log('post /api/items/:', req.body);
       const { name, quantity, price, picture, description, category } = req.body;
       await ItemsDAO.addItem(name, quantity, price, picture, description,
         req.user.typeId, req.user.name, category, req.user.location);
@@ -35,9 +44,10 @@ router.route('/:id?')
     if (req.params.id) {
       try {
         const { name, quantity, price, picture, description, category } = req.body;
-        const result = await ItemsDAO.updateItem(name, quantity, price, picture, description,
+        const result = await ItemsDAO.updateItem(req.params.id, name, quantity, price, picture, description,
           req.user.typeId, req.user.name, category, req.user.location);
-        if (result.nModified === 1) {
+        console.log('put /api/item/:id result=', result);
+        if (result.modifiedCount === 1) {
           res.json({ status: true, message: 'Item successfully updated!' });
         } else {
           // Set status to 400: Bad Request
@@ -45,6 +55,7 @@ router.route('/:id?')
         }
       } catch (e) {
         // Unexpected error
+        console.error('put /api/item/:id', e);
         res.status(500).json({ status: false, message: 'Error occurred while updating item!' });
       }
     } else {

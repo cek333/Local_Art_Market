@@ -7,9 +7,8 @@ function ListItem(props) {
   if (props.type === 'artist') {
     buttons = 
       <>
-        {/* <button type='button' className='list-item-button'
-          onClick={() => history.push(`/inventory/${props.item._id}`)}>Edit</button> */}
-        <button type='button' className='list-item-button'>Edit</button>
+        <button type='button' className='list-item-button'
+          onClick={() => history.push(`/inventory/${props.item._id}`)}>Edit</button>
         <button type='button' className='list-item-button'>Delete</button>
       </>;
   } else if (props.type === 'customer') {
@@ -17,7 +16,6 @@ function ListItem(props) {
   } else {
     buttons = <></>;
   }
-  const artistLink = `/artist/${props.item.artistId}`;
 
   return (
     <div className="list-item">

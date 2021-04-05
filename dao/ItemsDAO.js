@@ -37,7 +37,7 @@ class ItemsDAO {
 
   static updateItem(id, name, quantity, price, picture, description, artistId, artistName, category, location) {
     // replace document with incoming document
-    return items.updateOne(
+    return items.replaceOne(
       { _id: ObjectId(id) },
       { name, quantity, price, picture, description, artistId, artistName, category, location }
     );
@@ -63,6 +63,10 @@ class ItemsDAO {
 
   static getItemsByArtist(artistId) {
     return items.find({ artistId: ObjectId(artistId) }).toArray();
+  }
+
+  static getItemById(itemId) {
+    return items.findOne({ _id: ObjectId(itemId) });
   }
 
   static deleteItem(id) {
