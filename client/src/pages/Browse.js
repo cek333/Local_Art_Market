@@ -18,7 +18,6 @@ function Browse(props) {
   }
 
   function handleDelete(evt) {
-    console.log('Browse handleDelete evt.target', evt.target);
     API.deleteItem(evt.target.value, function() {
       updateItemList();
     });
