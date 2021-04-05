@@ -51,7 +51,7 @@ function ModifyItem(props) {
     clearMessages();
     const reqBody = {...itemProperties};
     // Convert quantity/amt from string to numbers
-    if (reqBody.quantity !== 'unlimited') {
+    if (reqBody.quantity.toString().toLowerCase() !== 'unlimited') {
       reqBody.quantity = Number(reqBody.quantity);
     }
     reqBody.price = Number(reqBody.price);
