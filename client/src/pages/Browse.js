@@ -9,9 +9,20 @@ function Browse(props) {
   const { user: propsUser } = props;
 
   useEffect(function() {
-    API.getItems((res) => setItemList(res));
+    updateItemList();
     // API.getOrders((res) => setOrderList(res));
   }, [])
+
+  function updateItemList() {
+    API.getItems((res) => setItemList(res));
+  }
+
+  function handleDelete(evt) {
+    console.log('Browse handleDelete evt.target', evt.target);
+    API.deleteItem(evt.target.value, function() {
+      updateItemList();
+    });
+  }
 
   let addItemLink;
   if (propsUser.type === 'artist') {
@@ -44,7 +55,8 @@ function Browse(props) {
       <div>
         {itemList.length === 0
           ? <p>There are no art pieces for sale.</p>
-          : itemList.map(item => <ListItem key={item._id} type={propsUser.type} item={item} />)
+          : itemList.map(item => <ListItem key={item._id} type={propsUser.type} item={item}
+              handleDelete={handleDelete} />)
         }
       </div>
     </div>

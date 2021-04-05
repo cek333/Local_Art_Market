@@ -47,8 +47,8 @@ export default class API {
     fetchJSON(`/api/item/${itemId}`, cb);
   }
 
-  static deleteItem(id, cb=noop) {
-    fetchJSON('/api/item', cb, 'delete');
+  static deleteItem(itemId, cb=noop) {
+    fetchJSON(`/api/item/${itemId}`, cb, 'delete');
   }
 
   // ORDERS

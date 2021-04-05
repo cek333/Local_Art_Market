@@ -9,7 +9,8 @@ function ListItem(props) {
       <>
         <button type='button' className='list-item-button'
           onClick={() => history.push(`/inventory/${props.item._id}`)}>Edit</button>
-        <button type='button' className='list-item-button'>Delete</button>
+        <button type='button' className='list-item-button' value={props.item._id}
+          onClick={props.handleDelete}>Delete</button>
       </>;
   } else if (props.type === 'customer') {
     buttons = <button type='button' className='list-item-button'>Add to Cart</button>;
