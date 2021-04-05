@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
-import Radio from '../components/Radio';
 import API from '../utils/API';
 
 function ModifyItem(props) {
@@ -94,8 +93,8 @@ function ModifyItem(props) {
           {CATEGORIES.map(category => {
             return (
               <React.Fragment key={category}>
-                <Radio id={category} name='category' value={category}
-                  onChange={handleChange} selected={itemProperties.category} required />
+                <input type='radio' id={category} name='category' value={category}
+                  onChange={handleChange} checked={category===itemProperties.category} required />
                 <label htmlFor={category}> {category}</label><br />
               </React.Fragment>
             );
