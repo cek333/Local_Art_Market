@@ -46,7 +46,7 @@ router.route('/:id?')
         const { name, quantity, price, picture, description, category } = req.body;
         const result = await ItemsDAO.updateItem(req.params.id, name, quantity, price, picture, description,
           req.user.typeId, req.user.name, category, req.user.location);
-        console.log('put /api/item/:id result=', result);
+        // console.log('put /api/item/:id result=', result);
         if (result.modifiedCount === 1) {
           res.json({ status: true, message: 'Item successfully updated!' });
         } else {

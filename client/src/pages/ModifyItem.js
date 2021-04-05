@@ -74,7 +74,6 @@ function ModifyItem(props) {
     }
   }
 
-  console.log('ModifyItem', itemId);
   return (
     <div className='box box_center'>
       <form className='box' onSubmit={handleSubmit}>
