@@ -6,7 +6,7 @@ import API from '../utils/API';
 function Browse(props) {
   const [ itemList, setItemList ] = useState([]);
   const [ orderList, setOrderList ] = useState([]);
-  const { user: propsUser } = props;
+  const { user: propsUser, handlePurchase: propsHandlePurchase } = props;
 
   useEffect(function() {
     updateItemList();
@@ -55,7 +55,7 @@ function Browse(props) {
         {itemList.length === 0
           ? <p>There are no art pieces for sale.</p>
           : itemList.map(item => <ListItem key={item._id} type={propsUser.type} item={item}
-              handleDelete={handleDelete} />)
+              handleDelete={handleDelete} handlePurchase={propsHandlePurchase} />)
         }
       </div>
     </div>

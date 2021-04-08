@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { HashRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
+import cloneDeep from 'lodash';
 import HeaderDefault from './components/HeaderDefault';
 import HeaderInternal from './components/HeaderInternal';
 import Login from './pages/Login';
@@ -13,6 +14,45 @@ import './App.css';
 
 function App() {
   const [ user, setUser ] = useState({ id: '', type: 'none', name: '', location: null });
+  const [ cart, updateCart ] = useState({ num_of_items: 0, total: 0 });
+    // { artistId: { itemId: count }, num_of_items: x, total: x }
+  const [ cartItems, updateCartItems ] = useState({});
+    // { itemId: { ...item properties } }
+
+  function addToCart(item) {
+    // Check if enough of item exists to be added to cart
+    let itemCnt;
+    if (cart[item.artistId] && cart[item.artistId][item._id]) {
+      // Item already purchased
+      itemCnt = cart[item.artistId][item._id].count + 1;
+    } else {
+      itemCnt = 1;
+    }
+    const maxCnt = item.quantity === 'unlimited' ? Math.MAX_SAFE_INTEGER : item.quantity;
+    if (itemCnt > maxCnt) {
+      return { status: false, message: 'Out-of-stock' };
+    }
+    // Item exists in sufficient quantity. Add to cart.
+    let { num_of_items, total } = cart;
+    num_of_items++;
+    total += item.price;
+    const newCart = cloneDeep(cart);
+    if (newCart[item.artistId]) {
+      if (newCart[item.artistId][item._id]) {
+        newCart[item.artistId][item._id].count = itemCnt;
+      } else {
+        newCart[item.artistId][item._id] = { count: itemCnt };
+      }
+    } else {
+      newCart[item.artistId] = { [item._id]: { count: itemCnt } };
+    }
+    newCart.num_of_items = num_of_items;
+    newCart.total = total;
+
+    console.log('newCart=', newCart);
+    updateCart(newCart);
+    return { status: true };
+  }
 
   useEffect(function() {
     API.getCurUser((res) => {
@@ -40,7 +80,7 @@ function App() {
     <Router>
       {header}
       <Switch>
-        <Route path='/browse'><Browse user={user} /></Route>
+        <Route path='/browse'><Browse user={user} handlePurchase={addToCart} /></Route>
         <Route path='/loginCustomer'><Login type="customer" updateUser={updateUser} /></Route>
         <Route path='/loginArtist'><Login type="artist" updateUser={updateUser} /></Route>
         <Route path='/profileView'><ProfileView user={user} /></Route>

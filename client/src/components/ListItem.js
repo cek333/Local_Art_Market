@@ -1,11 +1,20 @@
+import React, { useState } from 'react';
 import { NavLink, useHistory } from 'react-router-dom';
 
 function ListItem(props) {
   const history = useHistory();
+  const [errorMsg, setErrorMsg] = useState('');
+
+  function handleAddToCart(item) {
+    const result = props.handlePurchase(item);
+    if (!result.status) {
+      setErrorMsg(result.message);
+    }
+  }
 
   let buttons;
   if (props.type === 'artist') {
-    buttons = 
+    buttons =
       <>
         <button type='button' className='list-item-button'
           onClick={() => history.push(`/inventory/${props.item._id}`)}>Edit</button>
@@ -13,7 +22,12 @@ function ListItem(props) {
           onClick={props.handleDelete}>Delete</button>
       </>;
   } else if (props.type === 'customer') {
-    buttons = <button type='button' className='list-item-button'>Add to Cart</button>;
+    buttons =
+      <>
+        <button type='button' className='list-item-button'
+          onClick={()=>handleAddToCart(props.item)}>Add to Cart</button>
+        <span className='list-item-button errorMsg'>{errorMsg}</span>
+      </>
   } else {
     buttons = <></>;
   }
