@@ -14,51 +14,118 @@ import './App.css';
 
 function App() {
   const [ user, setUser ] = useState({ id: '', type: 'none', name: '', location: null });
-  const [ cart, updateCart ] = useState({ num_of_items: 0, total: 0 });
+  const [ cart, setCart ] = useState({ num_of_items: 0, total: 0 });
     // { artistId: { itemId: count }, num_of_items: x, total: x }
-  const [ cartItems, updateCartItems ] = useState({});
+  const [ cartItems, setCartItems ] = useState({});
     // { itemId: { ...item properties } }
 
-  function addToCart(item) {
-    // Check if enough of item exists to be added to cart
-    let itemCnt;
-    if (cart[item.artistId] && cart[item.artistId][item._id]) {
-      // Item already purchased
-      itemCnt = cart[item.artistId][item._id].count + 1;
-    } else {
-      itemCnt = 1;
-    }
-    const maxCnt = item.quantity === 'unlimited' ? Math.MAX_SAFE_INTEGER : item.quantity;
-    if (itemCnt > maxCnt) {
-      return { status: false, message: 'Out-of-stock' };
-    }
-    // Item exists in sufficient quantity. Add to cart.
+  function updateCart(item, action='add') {
     let { num_of_items, total } = cart;
-    num_of_items++;
-    total += item.price;
-    const newCart = cloneDeep(cart);
-    if (newCart[item.artistId]) {
-      if (newCart[item.artistId][item._id]) {
-        newCart[item.artistId][item._id].count = itemCnt;
+    let itemCnt;
+    switch (action) {
+      case('add'):
+        // Check if enough of item exists to be added to cart
+        if (cart[item.artistId] && cart[item.artistId][item._id]) {
+          // Item already purchased
+          itemCnt = cart[item.artistId][item._id].count + 1;
+        } else {
+          itemCnt = 1;
+        }
+        const maxCnt = item.quantity === 'unlimited' ? Math.MAX_SAFE_INTEGER : item.quantity;
+        if (itemCnt > maxCnt) {
+          return { status: false, message: 'Out-of-stock' };
+        }
+        // Item exists in sufficient quantity. Add to cart.
+        num_of_items++;
+        total += item.price;
+        break;
+      case('sub'):
+        // Shouldn't have to check if item exists (since we only call 'sub' for items already in cart)
+        //   However do some checks (just in case) to avoid crashing program
+        if (cart[item.artistId] && cart[item.artistId][item._id]) {
+          itemCnt = cart[item.artistId][item._id].count - 1;
+          num_of_items--;
+          total -= item.price;
+        }
+        break;
+      case('del'):
+        // Shouldn't have to check if item exists (since we only call 'del' for items already in cart)
+        //   However do some checks (just in case) to avoid crashing program
+        if (cart[item.artistId] && cart[item.artistId][item._id]) {
+          itemCnt = cart[item.artistId][item._id].count;
+          num_of_items -= itemCnt;
+          total -= (item.price * itemCnt);
+          // Force to zero
+          itemCnt = 0;
+        }
+        break;
+      default:
+        console.log('Error updating cart');
+        return { status: false, message: 'Error updating cart' };
+    }
+    // const newCart = cloneDeep(cart); // lodash deep copy
+    // Read cart from sessionStorage; JSON.parse also creates a deep copy of cart
+    let newCart;
+    if (sessionStorage.getItem('lam-cart')) {
+      newCart = JSON.parse(sessionStorage.getItem('lam-cart'));
+    } else {
+      newCart = { ...cart }; // shallow copy of 'num_of_items', 'total'
+    }
+    let items;
+    if (sessionStorage.getItem('lam-items')) {
+      items = JSON.parse(sessionStorage.getItem('lam-items'));
+    } else {
+      items = {};
+    }
+    if (itemCnt > 0) {
+      if (newCart[item.artistId]) {
+        if (newCart[item.artistId][item._id]) {
+          newCart[item.artistId][item._id].count = itemCnt;
+        } else {
+          newCart[item.artistId][item._id] = { count: itemCnt };
+        }
       } else {
-        newCart[item.artistId][item._id] = { count: itemCnt };
+        newCart[item.artistId] = { [item._id]: { count: itemCnt } };
+      }
+      if (!items[item._id]) {
+        items[item._id] = item; // keep track of unique items
       }
     } else {
-      newCart[item.artistId] = { [item._id]: { count: itemCnt } };
+      // Delete key/value pairs
+      // Shouldn't have to check if item exists (since we only call 'sub/del' for items already in cart)
+      //   However do some checks (just in case) to avoid crashing program
+      if (newCart[item.artistId] && newCart[item.artistId][item._id]) {
+        delete newCart[item.artistId][item._id];
+      }
+      if (items[item._id]) {
+        delete items[item._id];
+      }
     }
     newCart.num_of_items = num_of_items;
     newCart.total = total;
-
+    // write updated cart to sessionStorage
+    sessionStorage.setItem('lam-cart', JSON.stringify(newCart));
+    sessionStorage.setItem('lam-items', JSON.stringify(items));
     console.log('newCart=', newCart);
-    updateCart(newCart);
+    console.log('items=', items);
+    setCart(newCart);
+    setCartItems(items);
     return { status: true };
   }
 
   useEffect(function() {
+    // Get user from server
     API.getCurUser((res) => {
       const { id, type, name, location } = res;
       setUser({ id, type, name, location });
     });
+    // Check if cart data is saved in session storage
+    if (sessionStorage.getItem('lam-cart')) {
+      const cart = JSON.parse(sessionStorage.getItem('lam-cart'));
+      const items = JSON.parse(sessionStorage.getItem('lam-items'));
+      setCart(cart);
+      setCartItems(items);
+    }
   }, []);
 
   function updateUser() {
@@ -80,7 +147,7 @@ function App() {
     <Router>
       {header}
       <Switch>
-        <Route path='/browse'><Browse user={user} handlePurchase={addToCart} /></Route>
+        <Route path='/browse'><Browse user={user} handlePurchase={updateCart} /></Route>
         <Route path='/loginCustomer'><Login type="customer" updateUser={updateUser} /></Route>
         <Route path='/loginArtist'><Login type="artist" updateUser={updateUser} /></Route>
         <Route path='/profileView'><ProfileView user={user} /></Route>
