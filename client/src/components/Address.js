@@ -16,13 +16,13 @@ function Address(props) {
       <input type='text' id='city' name='city' placeholder='City' 
         value={propsAddress.city} onChange={propsHandleChange} required /><br />
       <label htmlFor='province'>Province</label>
-      <input type='text' id='province' name='province'
+      <input type='text' id='province' name='province' placeholder='Province'
         value={propsAddress.province} onChange={propsHandleChange} required /><br />
       <label htmlFor='postalcode'>Postal Code</label>
       <input type='text' id='postalcode' name='postalcode' placeholder='Postal Code' 
         value={propsAddress.postalcode} onChange={propsHandleChange} required /><br />
       <label htmlFor='country'>Country</label>
-      <input type='text' id='country' name='country' 
+      <input type='text' id='country' name='country' placeholder='Country'
         value={propsAddress.country} onChange={propsHandleChange} required /><br />
       <label htmlFor='phone_number'>Phone Number</label>
       <input type='text' id='phone_number' name='phone_number' placeholder='Phone number' 

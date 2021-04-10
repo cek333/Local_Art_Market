@@ -94,3 +94,60 @@ img {
   object-fit: contain;
   margin-right: 10px;
 }
+
+/* Cart */
+img.cart {
+  width: 80px;
+  height: 80px;
+}
+
+.cart-buttons {
+  display: inline-flex;
+}
+
+button.cart {
+  margin-top: 8px;
+  width: 30px;
+  height: 30px;
+}
+
+button.cart img {
+  width: 16px;
+  height: 16px;
+  margin-right: 0px; /* clear marign for img tag */
+  /* margin-left: -4px; */
+  vertical-align: middle;
+}
+
+span.cart {
+  margin-right: 10px;
+}
+
+table {
+  table-layout: fixed;
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid grey;
+}
+
+tbody td:nth-child(1) {
+  width: 15%;
+}
+
+tbody td:nth-child(3) {
+  width: 30%;
+}
+
+tbody td:nth-child(6) {
+  width: 10%;
+  text-align: end;
+}
+
+tr {
+  border: 1px solid grey;
+}
+
+th, td {
+  padding: 10px;
+  text-overflow: ellipsis;
+}
