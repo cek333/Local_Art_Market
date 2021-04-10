@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { NavLink, useHistory } from 'react-router-dom';
 
 function ListItem(props) {
+  const { type: propsType, location: propsLocation } = props.user;
   const history = useHistory();
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -13,7 +14,7 @@ function ListItem(props) {
   }
 
   let buttons;
-  if (props.type === 'artist') {
+  if (propsType === 'artist') {
     buttons =
       <>
         <button type='button' className='list-item-button'
@@ -21,7 +22,7 @@ function ListItem(props) {
         <button type='button' className='list-item-button' value={props.item._id}
           onClick={props.handleDelete}>Delete</button>
       </>;
-  } else if (props.type === 'customer') {
+  } else if (propsType === 'customer' && propsLocation !== null) {
     buttons =
       <>
         <button type='button' className='list-item-button'

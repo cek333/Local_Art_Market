@@ -30,9 +30,16 @@ function Browse(props) {
     } else {
       addItemLink = <NavLink to='/inventory'>Add Item</NavLink>;
     }
+  } else if (propsUser.type === 'customer') {
+    if (propsUser.location === null) {
+      addItemLink = <p className='errorMsg'>Please complete your profile to enable purchasing items and the 'search by distance' feature.</p>;
+    } else {
+      addItemLink = <></>;
+    }
   } else {
     addItemLink = <></>;
   }
+
 
   return (
     <div>
@@ -54,7 +61,7 @@ function Browse(props) {
       <div>
         {itemList.length === 0
           ? <p>There are no art pieces for sale.</p>
-          : itemList.map(item => <ListItem key={item._id} type={propsUser.type} item={item}
+          : itemList.map(item => <ListItem key={item._id} user={propsUser} item={item}
               handleDelete={handleDelete} handlePurchase={propsHandlePurchase} />)
         }
       </div>
