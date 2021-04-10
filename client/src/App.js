@@ -9,6 +9,7 @@ import ProfileEdit from './pages/ProfileEdit';
 import ProfileView from './pages/ProfileView';
 import ProfileBio from './pages/ProfileBio';
 import ModifyItem from './pages/ModifyItem';
+import Cart from './pages/Cart';
 import API from './utils/API';
 import './App.css';
 
@@ -139,7 +140,7 @@ function App() {
   if (user.id === '') {
     header = <HeaderDefault />;
   } else {
-    header = <HeaderInternal user={user} updateUser={updateUser} />;
+    header = <HeaderInternal user={user} updateUser={updateUser} cartCnt={cart.num_of_items} />;
   }
 
   console.log('App:', user);
@@ -154,6 +155,7 @@ function App() {
         <Route path='/profileEdit'><ProfileEdit user={user} updateUser={updateUser} /></Route>
         <Route path='/artist/:artistId'><ProfileBio /></Route>
         <Route path='/inventory/:itemId?'><ModifyItem /></Route>
+        <Route path='/cart'><Cart cart={cart} items={cartItems} updateCart={updateCart} /></Route>
         <Redirect to='/browse' />
       </Switch>
     </Router>
