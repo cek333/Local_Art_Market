@@ -8,9 +8,15 @@ router.route('/:id?')
     try {
       let result;
       if (req.params.id) {
-        // customer requesting artist's bio
-        result = await ArtistsDAO.getProfile(req.params.id);
-        res.json({ status: true, name: result.name, bio: result.bio });
+        if (req.user && req.user.type === 'artist') {
+          // artist requesting customer's info
+          result = await CustomersDAO.getProfile(req.params.id);
+          res.json({ status: true, name: result.name, number: result.address.phone_number });
+        } else {
+          // customer requesting artist's bio
+          result = await ArtistsDAO.getProfile(req.params.id);
+          res.json({ status: true, name: result.name, bio: result.bio });
+        }
       } else {
         if (req.user && req.user.type === 'artist') {
           result = await ArtistsDAO.getProfile(req.user.typeId);
