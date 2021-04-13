@@ -17,6 +17,24 @@ function fetchJSON(url, cb=noop, method='get', data={}) {
   })
 }
 
+async function fetchJSONSync(url, method='get', data={}) {
+  let settings = {
+    method,
+    headers: { 'Content-Type': 'application/json' }
+  };
+  if (method === 'post' || method === 'put') {
+    settings.body = JSON.stringify(data);
+  }
+  let result;
+  try {
+    result = fetch(url, settings).then(res => res.json());
+  } catch (err) {
+    console.log('[fetchJSONSync] err=', err);
+    result = [];
+  }
+  return result;
+}
+
 export default class API {
   // action: login, signup, logout
   static updateUser(action, email='', password='', type='customer', cb=noop) {
@@ -54,6 +72,21 @@ export default class API {
   // ORDERS
   static getOrders(cb) {
     fetchJSON('/api/order', cb);
+  }
+
+  static async createOrders(orders, cb) {
+    const result = await Promise.all(orders.map(order => fetchJSONSync('/api/order', 'post', order)));
+    let errors = '';
+    result.forEach(res => {
+      if (!res.status) {
+        errors += `${res.message}\n`;
+      }
+    });
+    if (errors.length > 0) {
+      cb({ status: false, message: errors.trim() });
+    } else {
+      cb({ status: true, message: 'Order Submitted!' });
+    }
   }
 
   // PROFILES

@@ -7,6 +7,7 @@ function Cart(props) {
   const { cart: propsCart, items: propsItems, updateCart: propsUpdateCart } = props;
   const [ profile, setProfile ] = useState({ name:'', bio:'', address: {location: null} });
   const [ errorMsg, setErrorMsg ] = useState('');
+  const [ successMsg, setSuccessMsg ] = useState('');
   const history = useHistory();
 
   useEffect(function() {
@@ -20,6 +21,33 @@ function Cart(props) {
       }
     });
   }, []);
+
+  function submitOrder() {
+    const orders = [];
+    Object.keys(propsCart).forEach(artistId => {
+      let artistTotal = 0;
+      let aName;
+      const artistItems = [];
+      Object.keys(propsCart[artistId]).forEach(itemId => {
+        const { name, price, artistName } = propsItems[itemId];
+        const { count } = propsCart[artistId][itemId];
+        const subTotal = count * price;
+        aName = artistName;
+        artistTotal += subTotal;
+        artistItems.push({ itemId, name, price, quantity: count, total: subTotal });
+      });
+      // Create order for each artist
+      const order = { items: artistItems, total: artistTotal, artistId, artistName: aName };
+      orders.push(order);
+    });
+    API.createOrders(orders, (res) => {
+      if (res.status) {
+        setSuccessMsg(res.message);
+      } else {
+        setErrorMsg(res.message);
+      }
+    });
+  }
 
   const itemList = [];
   Object.keys(propsCart).forEach(artistId => {
@@ -88,6 +116,7 @@ function Cart(props) {
                 </tr>
               </tbody>
             </table>
+            <p className='successMsg'>{successMsg}</p>
             <p className='errorMsg'>{errorMsg}</p>
             <div className='sameRow'>
               <button type='button' onClick={() => history.goBack()}>Back</button>
