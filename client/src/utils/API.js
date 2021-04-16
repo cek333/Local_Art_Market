@@ -89,6 +89,10 @@ export default class API {
     }
   }
 
+  static updateOrder(orderId, cb) {
+    fetchJSON(`/api/order/${orderId}`, cb, 'put');
+  }
+
   // PROFILES
   static getProfile(cb) {
     fetchJSON('/api/info', cb);
@@ -100,5 +104,9 @@ export default class API {
 
   static updateProfile(body, cb) {
     fetchJSON('/api/info', cb, 'put', body);
+  }
+
+  static getCustomerInfo(customerId, cb) {
+    fetchJSON(`/api/info/${customerId}`, cb);
   }
 }

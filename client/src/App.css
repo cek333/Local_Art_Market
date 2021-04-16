@@ -95,6 +95,20 @@ img {
   margin-right: 10px;
 }
 
+@media screen and (max-width: 480px) {
+  img {
+    width: 100px;
+    height: 100px;
+  }
+  .list-item div {
+    display: flex;
+    flex-direction: column;
+  }
+  table td  { list-style: none; display: list-item; }
+  td.empty { display: none; }
+  table thead { display: none; }
+}
+
 /* Cart */
 img.cart {
   width: 80px;
@@ -130,15 +144,26 @@ table {
   border: 1px solid grey;
 }
 
-tbody td:nth-child(1) {
+table.cart tbody td:nth-child(1) {
   width: 15%;
 }
 
-tbody td:nth-child(3) {
+table.cart tbody td:nth-child(3) {
   width: 30%;
 }
 
-tbody td:nth-child(6) {
+table.cart tbody td:nth-child(6) {
+  width: 10%;
+  text-align: end;
+}
+
+table.order th,
+table.order td {
+  text-align: start;
+}
+
+table.order thead th:last-child,
+table.order tbody td:last-child {
   width: 10%;
   text-align: end;
 }

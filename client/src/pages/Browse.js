@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import ListItem from '../components/ListItem';
+import OrderItem from '../components/OrderItem';
 import API from '../utils/API';
 
 function Browse(props) {
@@ -10,8 +11,12 @@ function Browse(props) {
 
   useEffect(function() {
     updateItemList();
-    // API.getOrders((res) => setOrderList(res));
+    updateOrderList();
   }, [])
+
+  function updateOrderList() {
+    API.getOrders((res) => setOrderList(res));
+  }
 
   function updateItemList() {
     API.getItems((res) => setItemList(res));
@@ -40,7 +45,6 @@ function Browse(props) {
     addItemLink = <></>;
   }
 
-
   return (
     <div>
       {propsUser.id !== '' &&
@@ -49,10 +53,8 @@ function Browse(props) {
         <div>
           {orderList.length === 0 ? <p>You don't have any current orders.</p> :
             orderList.map(order =>
-              <div key={order._id}>
-                <p>Customer: {order.customerEmail}, Item: {order.items[0].name}, 
-                  Quantity: {order.items[0].quantity} Total: {order.total}</p>
-              </div>)
+              <OrderItem key={order._id} user={propsUser} order={order}
+                updateOrderList={updateOrderList} />)
           }
         </div>
       </>}
