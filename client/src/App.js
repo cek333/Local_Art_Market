@@ -20,6 +20,15 @@ function App() {
   const [ cartItems, setCartItems ] = useState({});
     // { itemId: { ...item properties } }
 
+  function emptyCart() {
+    const emptyCart = { num_of_items: 0, total: 0 };
+    const emptyCartItems = {};
+    sessionStorage.setItem('lam-cart', JSON.stringify(emptyCart));
+    sessionStorage.setItem('lam-items', JSON.stringify(emptyCartItems));
+    setCart(emptyCart);
+    setCartItems(emptyCartItems);
+  }
+
   function updateCart(item, action='add') {
     let { num_of_items, total } = cart;
     let itemCnt;
@@ -107,8 +116,8 @@ function App() {
     // write updated cart to sessionStorage
     sessionStorage.setItem('lam-cart', JSON.stringify(newCart));
     sessionStorage.setItem('lam-items', JSON.stringify(items));
-    console.log('newCart=', newCart);
-    console.log('items=', items);
+    // console.log('newCart=', newCart);
+    // console.log('items=', items);
     setCart(newCart);
     setCartItems(items);
     return { status: true };
@@ -155,7 +164,8 @@ function App() {
         <Route path='/profileEdit'><ProfileEdit user={user} updateUser={updateUser} /></Route>
         <Route path='/artist/:artistId'><ProfileBio /></Route>
         <Route path='/inventory/:itemId?'><ModifyItem /></Route>
-        <Route path='/cart'><Cart cart={cart} items={cartItems} updateCart={updateCart} /></Route>
+        <Route path='/cart'><Cart cart={cart} items={cartItems}
+          updateCart={updateCart} emptyCart={emptyCart} /></Route>
         <Redirect to='/browse' />
       </Switch>
     </Router>
