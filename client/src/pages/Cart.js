@@ -4,7 +4,8 @@ import API from '../utils/API';
 import deleteIcon from '../assets/delete_icon.svg';
 
 function Cart(props) {
-  const { cart: propsCart, items: propsItems, updateCart: propsUpdateCart } = props;
+  const { cart: propsCart, items: propsItems,
+      updateCart: propsUpdateCart, emptyCart: propsEmptyCart } = props;
   const [ profile, setProfile ] = useState({ name:'', bio:'', address: {location: null} });
   const [ errorMsg, setErrorMsg ] = useState('');
   const [ successMsg, setSuccessMsg ] = useState('');
@@ -25,24 +26,30 @@ function Cart(props) {
   function submitOrder() {
     const orders = [];
     Object.keys(propsCart).forEach(artistId => {
-      let artistTotal = 0;
-      let aName;
-      const artistItems = [];
-      Object.keys(propsCart[artistId]).forEach(itemId => {
-        const { name, price, artistName } = propsItems[itemId];
-        const { count } = propsCart[artistId][itemId];
-        const subTotal = count * price;
-        aName = artistName;
-        artistTotal += subTotal;
-        artistItems.push({ itemId, name, price, quantity: count, total: subTotal });
-      });
-      // Create order for each artist
-      const order = { items: artistItems, total: artistTotal, artistId, artistName: aName };
-      orders.push(order);
+      // Cart has following structure: { artistId: { itemId: count }, num_of_items: x, total: x }
+      //   So skip num_of_items, total as object keys
+      if (!(artistId === 'num_of_items' || artistId === 'total')) {
+        let artistTotal = 0;
+        let aName;
+        const artistItems = [];
+        Object.keys(propsCart[artistId]).forEach(itemId => {
+          const { name, price, artistName } = propsItems[itemId];
+          const { count } = propsCart[artistId][itemId];
+          const subTotal = count * price;
+          aName = artistName;
+          artistTotal += subTotal;
+          artistItems.push({ itemId, name, price, quantity: count, total: subTotal });
+        });
+        // Create order for each artist
+        const order = { items: artistItems, total: artistTotal, artistId, artistName: aName };
+        orders.push(order);
+      }
     });
+    // console.log('submitOrder', orders);
     API.createOrders(orders, (res) => {
       if (res.status) {
         setSuccessMsg(res.message);
+        propsEmptyCart();
       } else {
         setErrorMsg(res.message);
       }
@@ -51,33 +58,37 @@ function Cart(props) {
 
   const itemList = [];
   Object.keys(propsCart).forEach(artistId => {
-    Object.keys(propsCart[artistId]).forEach(itemId => {
-      const { name, price, picture, artistName } = propsItems[itemId];
-      const { count } = propsCart[artistId][itemId];
-      const subTotal = count * price;
-      const itemRow =
-        <tr key={`${artistId}${itemId}`}>
-          <td>{artistName}</td>
-          <td><img class='cart' src={picture} alt='' /></td>
-          <td>{name}</td>
-          <td>${price.toFixed(2)}</td>
-          <td>
-            <span class='cart'>{count}</span>
-            <div class='cart-buttons'>
-              <button type="button" class='cart'
-                onClick={() => propsUpdateCart(propsItems[itemId])}>+</button>
-              <button type="button" class='cart'
-                onClick={() => propsUpdateCart(propsItems[itemId], 'sub')}>-</button>
-              <button type="button" class='cart'
-                onClick={() => propsUpdateCart(propsItems[itemId], 'del')}>
-                  <img src={deleteIcon} alt='delete' />
-              </button>
-            </div>
-          </td>
-          <td>${subTotal.toFixed(2)}</td>
-        </tr>;
-      itemList.push(itemRow);
-    });
+    // Cart has following structure: { artistId: { itemId: count }, num_of_items: x, total: x }
+    //   So skip num_of_items, total as object keys
+    if (!(artistId === 'num_of_items' || artistId === 'total')) {
+      Object.keys(propsCart[artistId]).forEach(itemId => {
+        const { name, price, picture, artistName } = propsItems[itemId];
+        const { count } = propsCart[artistId][itemId];
+        const subTotal = count * price;
+        const itemRow =
+          <tr key={`${artistId}${itemId}`}>
+            <td>{artistName}</td>
+            <td><img className='cart' src={picture} alt='' /></td>
+            <td>{name}</td>
+            <td>${price.toFixed(2)}</td>
+            <td>
+              <span className='cart'>{count}</span>
+              <div className='cart-buttons'>
+                <button type="button" className='cart'
+                  onClick={() => propsUpdateCart(propsItems[itemId])}>+</button>
+                <button type="button" className='cart'
+                  onClick={() => propsUpdateCart(propsItems[itemId], 'sub')}>-</button>
+                <button type="button" className='cart'
+                  onClick={() => propsUpdateCart(propsItems[itemId], 'del')}>
+                    <img src={deleteIcon} alt='delete' />
+                </button>
+              </div>
+            </td>
+            <td>${subTotal.toFixed(2)}</td>
+          </tr>;
+        itemList.push(itemRow);
+      });
+    }
   });
 
   let customerInfo = 
@@ -99,28 +110,33 @@ function Cart(props) {
       <h3>Checkout</h3>
       {propsCart.num_of_items <= 0
         ? <>
-            <p>There are no items in your cart.</p>
+            {successMsg
+              ? <p className='successMsg'>{successMsg}</p>
+              : <p>There are no items in your cart.</p>
+            }
             <div>
-                <button type='button' onClick={() => history.goBack()}>Back</button>
+                <button type='button' onClick={() => history.push('/browse')}>Back</button>
             </div>
           </>
         : <>
             {customerInfo}
-            <table>
+            <table className='cart'>
               <tbody>
                 {itemList}
                 <tr>
                   <td>Total</td>
-                  <td></td><td></td><td></td><td></td>
+                  <td class='empty'></td>
+                  <td class='empty'></td>
+                  <td class='empty'></td>
+                  <td class='empty'></td>
                   <td>${propsCart.total.toFixed(2)}</td>
                 </tr>
               </tbody>
             </table>
-            <p className='successMsg'>{successMsg}</p>
             <p className='errorMsg'>{errorMsg}</p>
             <div className='sameRow'>
-              <button type='button' onClick={() => history.goBack()}>Back</button>
-              <button type='button'>Complete Purchase</button>
+              <button type='button' onClick={() => history.push('/browse')}>Back</button>
+              <button type='button' onClick={submitOrder}>Complete Purchase</button>
             </div>
           </>
       }
