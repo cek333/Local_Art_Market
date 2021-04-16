@@ -17,7 +17,7 @@ class OrdersDAO {
 
   static addOrder(items, total, customerId, customerName, artistId, artistName) {
     return orders.insertOne({
-      items, total, customerId, customerName, artistId, artistName,
+      items, total, customerId, customerName, artistId: ObjectId(artistId), artistName,
       dateOrdered: Date.now(), dateFulfilled: null, status: 'Pending'
     });
   }
