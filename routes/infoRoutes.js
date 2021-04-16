@@ -11,7 +11,7 @@ router.route('/:id?')
         if (req.user && req.user.type === 'artist') {
           // artist requesting customer's info
           result = await CustomersDAO.getProfile(req.params.id);
-          res.json({ status: true, name: result.name, number: result.address.phone_number });
+          res.json({ status: true, name: result.name, phone_number: result.address.phone_number });
         } else {
           // customer requesting artist's bio
           result = await ArtistsDAO.getProfile(req.params.id);
