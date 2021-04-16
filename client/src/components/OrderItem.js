@@ -35,10 +35,10 @@ function OrderItem(props) {
           <button type='button' className='list-item-button'
             onClick={() => handleOrderComplete(props.order._id)}>Complete Order</button>
         }
-        {customerInfo.phone_number === '' &&
+        {/* {customerInfo.phone_number === '' &&
           <button type='button' className='list-item-button'
             onClick={() => getCustomerInfo(props.order.customerId)}>Get Customer Info</button>
-        }
+        } */}
       </>;
   } else {
     buttons = <></>;
