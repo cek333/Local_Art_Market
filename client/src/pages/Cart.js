@@ -125,10 +125,10 @@ function Cart(props) {
                 {itemList}
                 <tr>
                   <td>Total</td>
-                  <td class='empty'></td>
-                  <td class='empty'></td>
-                  <td class='empty'></td>
-                  <td class='empty'></td>
+                  <td className='empty'></td>
+                  <td className='empty'></td>
+                  <td className='empty'></td>
+                  <td className='empty'></td>
                   <td>${propsCart.total.toFixed(2)}</td>
                 </tr>
               </tbody>
