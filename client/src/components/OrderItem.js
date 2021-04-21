@@ -65,9 +65,9 @@ function OrderItem(props) {
             </tr>
           )}
           <tr>
-            <td class='empty'></td>
-            <td class='empty'></td>
-            <td class='empty'></td>
+            <td className='empty'></td>
+            <td className='empty'></td>
+            <td className='empty'></td>
             <td>${props.order.total.toFixed(2)}</td>
           </tr>
         </tbody>
@@ -82,7 +82,7 @@ function OrderItem(props) {
           <><br /><span>Cusomter Info: {customerInfo.name}, {customerInfo.phone_number}</span></>
         }
         {errorMsg &&
-          <><br /><span class='errorMsg'>{errorMsg}</span></>
+          <><br /><span className='errorMsg'>{errorMsg}</span></>
         }
       </p>
     </div>
