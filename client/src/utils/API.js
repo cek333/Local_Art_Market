@@ -55,9 +55,28 @@ export default class API {
     fetchJSON(`/api/item/${itemId}`, cb, 'put', body);
   }
 
-  // Get all items (for customer), or list of items by artist (for artist)
+  // Get list of items by artist (for artist)
   static getItems(cb) {
     fetchJSON('/api/item', cb);
+  }
+
+  // Get/Search list of items (for customer)
+  static searchItems(term, category, price, location, cb) {
+    let queryParams = [];
+    if (term) {
+      queryParams.push(`searchTerm=${term}`);
+    }
+    if (category) {
+      queryParams.push(`category=${category}`);
+    }
+    if (price) {
+      queryParams.push(`priceLevel=${price}`);
+    }
+    if (location) {
+      queryParams.push(`longitude=${location.coordinates[0]}`);
+      queryParams.push(`latitude=${location.coordinates[1]}`);
+    }
+    fetchJSON(`/api/item?${queryParams.join('&')}`, cb);
   }
 
   // Get (single) item by itemId

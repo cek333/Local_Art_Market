@@ -2,11 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import ListItem from '../components/ListItem';
 import OrderItem from '../components/OrderItem';
+import Search from '../components/Search';
 import API from '../utils/API';
 
 function Browse(props) {
   const [ itemList, setItemList ] = useState([]);
   const [ orderList, setOrderList ] = useState([]);
+  const [ itemsByPrice, setItemsByPriceList ] = useState([]);
+  const [ itemsByCategory, setItemsByCategoryList ] = useState([]);
   const { user: propsUser, handlePurchase: propsHandlePurchase } = props;
 
   useEffect(function() {
@@ -18,8 +21,16 @@ function Browse(props) {
     API.getOrders((res) => setOrderList(res));
   }
 
-  function updateItemList() {
-    API.getItems((res) => setItemList(res));
+  function updateItemList(searchTerm='', searchCategory='', searchPrice='', searchLocation='') {
+    if (propsUser.type === 'artist') {
+      API.getItems((res) => setItemList(res.items));
+    } else {
+      API.searchItems(searchTerm, searchCategory, searchPrice, searchLocation, (res) => {
+        setItemsByPriceList(res.prices);
+        setItemsByCategoryList(res.categories);
+        setItemList(res.items);
+      });
+    }
   }
 
   function handleDelete(evt) {
@@ -60,12 +71,16 @@ function Browse(props) {
       </>}
       <h3>Items For Sale</h3>
       {addItemLink}
-      <div>
-        {itemList.length === 0
-          ? <p>There are no art pieces for sale.</p>
-          : itemList.map(item => <ListItem key={item._id} user={propsUser} item={item}
-              handleDelete={handleDelete} handlePurchase={propsHandlePurchase} />)
-        }
+      <div className='wrap'>
+        <Search user={propsUser} itemsByCategory={itemsByCategory} itemsByPrice={itemsByPrice}
+          updateItemList={updateItemList} />
+        <div>
+          {itemList.length === 0
+            ? <p>There are no art pieces for sale.</p>
+            : itemList.map(item => <ListItem key={item._id} user={propsUser} item={item}
+                handleDelete={handleDelete} handlePurchase={propsHandlePurchase} />)
+          }
+        </div>
       </div>
     </div>
   )

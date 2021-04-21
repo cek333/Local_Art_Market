@@ -50,6 +50,11 @@ a {
   /* transform: translateY(5vh); */
 }
 
+.search {
+  margin-top: 10px;
+  margin-right: 10px;
+}
+
 .box_center {
   margin: 0 auto;
 }
@@ -72,6 +77,11 @@ a {
 }
 
 /* Browse Page */
+.wrap {
+  display: grid;
+  grid-template-columns: minmax(150px, 25%) 1fr;
+}
+
 .list-item {
   border: 1px solid grey;
   margin-bottom: 10px;
@@ -107,6 +117,13 @@ img {
   table td  { list-style: none; display: list-item; }
   td.empty { display: none; }
   table thead { display: none; }
+}
+
+@media screen and (max-width: 800px) {
+  .wrap {
+    display: flex;
+    flex-wrap: wrap;
+  }
 }
 
 /* Cart */
