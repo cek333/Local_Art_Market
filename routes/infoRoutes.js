@@ -51,12 +51,16 @@ router.route('/:id?')
         return;
       }
       // console.log(result);
-      if (result.modifiedCount === 1) {
-        res.json({ status: true, message: 'Profile successfully updated!' });
-      } else {
-        // Set status to 400: Bad Request
-        res.status(400).json({ status: false, message: 'Error occurred while updating artist profile!' });
-      }
+      // if (result.modifiedCount === 1) {
+      //   res.json({ status: true, message: 'Profile successfully updated!' });
+      // } else {
+      //   // Set status to 400: Bad Request
+      //   res.status(400).json({ status: false, message: 'Error occurred while updating artist profile!' });
+      // }
+
+      // If new data = old data, then result.modifiedCount = 0 (but result.matchedCount = 1)
+      //   Just assume success!
+      res.json({ status: true, message: 'Profile successfully updated!' });
     } catch (e) {
       // Unexpected error
       res.status(500).json({ status: false, message: 'Error occurred while updating artist profile!' });
