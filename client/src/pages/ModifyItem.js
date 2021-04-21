@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
+import Picture from '../components/Picture';
 import API from '../utils/API';
 import constants from '../utils/constants_client';
 
@@ -45,6 +46,10 @@ function ModifyItem(props) {
     setItemProperties({ ...itemProperties, [name]: value });
   }
 
+  function handlePictureChange(src) {
+    setItemProperties({ ...itemProperties, picture: src });
+  }
+
   function handleSubmit(evt) {
     evt.preventDefault();
     clearMessages();
@@ -88,6 +93,7 @@ function ModifyItem(props) {
         <label htmlFor='description'>Description</label>
         <textarea name='description' id='description' value={itemProperties.description}
               placeholder='Description' onChange={handleChange} required />
+        <Picture picUrl={itemProperties.picture} onChange={handlePictureChange} />
         <fieldset>
           <legend>Categories</legend>
           {constants.CATEGORIES.map(category => {
