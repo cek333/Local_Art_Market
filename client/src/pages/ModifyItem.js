@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import API from '../utils/API';
+import constants from '../utils/constants_client';
 
 function ModifyItem(props) {
-  const CATEGORIES = ['prints', 'drawing & illustration', 'painting', 'photography', 'sculpture',
-    'dolls & miniatures', 'textiles', 'mixed media & collage', 'cermaics', 'glass art', 'other'];
+
   const [ errorMsg, setErrorMsg ] = useState('');
   const [ successMsg, setSuccessMsg ] = useState('');
   const [ itemProperties, setItemProperties ] = useState({
@@ -90,7 +90,7 @@ function ModifyItem(props) {
               placeholder='Description' onChange={handleChange} required />
         <fieldset>
           <legend>Categories</legend>
-          {CATEGORIES.map(category => {
+          {constants.CATEGORIES.map(category => {
             return (
               <React.Fragment key={category}>
                 <input type='radio' id={category} name='category' value={category}
