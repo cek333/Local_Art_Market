@@ -15,7 +15,7 @@ router.route('/:id?')
         } else {
           // customer requesting artist's bio
           result = await ArtistsDAO.getProfile(req.params.id);
-          res.json({ status: true, name: result.name, bio: result.bio });
+          res.json({ status: true, name: result.name, bio: result.bio, picture: result.picture });
         }
       } else {
         if (req.user && req.user.type === 'artist') {
@@ -29,6 +29,7 @@ router.route('/:id?')
         const clientInfo = { name: result.name, address: result.address };
         if (req.user.type === 'artist') {
           clientInfo.bio = result.bio;
+          clientInfo.picture = result.picture;
         }
         res.json({ status: true, ...clientInfo });
       }
@@ -39,11 +40,11 @@ router.route('/:id?')
   })
   .put(async function(req, res) {
     try {
-      const { address, name, bio = '' } = req.body;
+      const { address, name, bio = '', picture = '' } = req.body;
       address.location = { type: 'Point', coordinates: [-73.961704, 40.551234] };
       let result;
       if (req.user && req.user.type === 'artist') {
-        result = await ArtistsDAO.updateProfile(req.user.typeId, address, name, bio);
+        result = await ArtistsDAO.updateProfile(req.user.typeId, address, name, bio, picture);
       } else if (req.user && req.user.type === 'customer') {
         result = await CustomersDAO.updateProfile(req.user.typeId, address, name);
       } else {
