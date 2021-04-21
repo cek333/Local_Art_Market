@@ -50,10 +50,12 @@ function OrderItem(props) {
       <p className='heading'>Artist: {props.order.artistName}</p>
       <table className='order'>
         <thead>
-          <th>Item</th>
-          <th>Price</th>
-          <th>Quantity</th>
-          <th>Total</th>
+          <tr>
+            <th>Item</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Total</th>
+          </tr>
         </thead>
         <tbody>
           {props.order.items.map(item =>
