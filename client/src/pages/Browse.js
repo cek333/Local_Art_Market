@@ -15,7 +15,7 @@ function Browse(props) {
   useEffect(function() {
     updateItemList();
     updateOrderList();
-  }, [])
+  }, [propsUser])
 
   function updateOrderList() {
     API.getOrders((res) => setOrderList(res));
@@ -56,6 +56,14 @@ function Browse(props) {
     addItemLink = <></>;
   }
 
+  let searchBox;
+  if (propsUser.type === 'artist') {
+    searchBox = <></>;
+  } else {
+    searchBox = <Search user={propsUser} itemsByCategory={itemsByCategory} itemsByPrice={itemsByPrice}
+      updateItemList={updateItemList} />;
+  }
+
   return (
     <div>
       {propsUser.id !== '' &&
@@ -71,9 +79,8 @@ function Browse(props) {
       </>}
       <h3>Items For Sale</h3>
       {addItemLink}
-      <div className='wrap'>
-        <Search user={propsUser} itemsByCategory={itemsByCategory} itemsByPrice={itemsByPrice}
-          updateItemList={updateItemList} />
+      <div className={propsUser.type ==='artist' ? 'no-wrap' : 'wrap'}>
+        {searchBox}
         <div>
           {itemList.length === 0
             ? <p>There are no art pieces for sale.</p>
