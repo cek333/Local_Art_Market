@@ -105,6 +105,10 @@ img {
   margin-right: 10px;
 }
 
+.success-highlight {
+  border: 4px solid limegreen;
+}
+
 @media screen and (max-width: 480px) {
   img {
     width: 100px;

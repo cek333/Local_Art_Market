@@ -5,10 +5,32 @@ function ListItem(props) {
   const { type: propsType, location: propsLocation } = props.user;
   const history = useHistory();
   const [errorMsg, setErrorMsg] = useState('');
+  const [highlight, setHighlight] = useState('');
+
+  function highlightButton(state) {
+    switch(state) {
+      case 'success':
+        setHighlight('success-highlight');
+        break;
+      case 'error':
+        setHighlight('error-highlight');
+        break;
+      default: // none
+        setHighlight('');
+        break;
+    }
+  }
+
+  function toggleButtonHighlight(state) {
+    highlightButton(state);
+    setTimeout(() => highlightButton('none'), 1200);
+  }
 
   function handleAddToCart(item) {
     const result = props.handlePurchase(item);
-    if (!result.status) {
+    if (result.status) {
+      toggleButtonHighlight('success');
+    } else {
       setErrorMsg(result.message);
     }
   }
@@ -25,7 +47,7 @@ function ListItem(props) {
   } else if (propsType === 'customer' && propsLocation !== null) {
     buttons =
       <>
-        <button type='button' className='list-item-button'
+        <button type='button' className={`list-item-button ${highlight}`}
           onClick={()=>handleAddToCart(props.item)}>Add to Cart</button>
         <span className='list-item-button errorMsg'>{errorMsg}</span>
       </>
