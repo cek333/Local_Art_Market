@@ -65,8 +65,12 @@ function ListItem(props) {
           <span className='heading'>Quantity: </span>{props.item.quantity}<br />
           <span className='heading'>Price: </span>${props.item.price.toFixed(2)}<br />
           <span className='heading'>Description: </span>{props.item.description}<br />
-          <span className='heading'>Artist: </span>
-            <NavLink to={`/artist/${props.item.artistId}`}>{props.item.artistName}</NavLink><br />
+          {propsType !== 'artist' &&
+            <>
+              <span className='heading'>Artist: </span>
+              <NavLink to={`/artist/${props.item.artistId}`}>{props.item.artistName}</NavLink><br />
+            </>
+          }
           {props.item.hasOwnProperty('distance') && <><span>Distance&nbsp;(meters): </span>{props.item.distance}</>}
         </p>
       </div>
