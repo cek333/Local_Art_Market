@@ -1,6 +1,6 @@
 const constants = {
-  CATEGORIES: ['prints', 'drawing & illustration', 'painting', 'photography', 'sculpture',
-'dolls & miniatures', 'textiles', 'mixed media & collage', 'cermaics', 'glass art', 'custom', 'other'],
+  CATEGORIES: ['prints', 'drawing and illustration', 'painting', 'photography', 'sculpture',
+'dolls and miniatures', 'textiles', 'mixed media and collage', 'cermaics', 'glass art', 'custom', 'other'],
   PRICE_LABEL_MAP: {
     0: '$0 to $24.99',
     25: '$25.00 to $49.99',
