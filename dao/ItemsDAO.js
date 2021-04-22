@@ -127,6 +127,7 @@ class ItemsDAO {
         $geoNear: {
           near: location,
           distanceField: 'distance',
+          distanceMultiplier: 0.001, // m to km
           query: query,
           spherical: true
         }

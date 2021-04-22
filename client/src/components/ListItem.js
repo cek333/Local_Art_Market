@@ -71,7 +71,7 @@ function ListItem(props) {
               <NavLink to={`/artist/${props.item.artistId}`}>{props.item.artistName}</NavLink><br />
             </>
           }
-          {props.item.hasOwnProperty('distance') && <><span>Distance&nbsp;(meters): </span>{props.item.distance}</>}
+          {props.item.hasOwnProperty('distance') && <><span>Distance&nbsp;(km): </span>{props.item.distance.toFixed(1)}</>}
         </p>
       </div>
     </div>
