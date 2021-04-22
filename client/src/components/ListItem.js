@@ -67,6 +67,7 @@ function ListItem(props) {
           <span className='heading'>Description: </span>{props.item.description}<br />
           <span className='heading'>Artist: </span>
             <NavLink to={`/artist/${props.item.artistId}`}>{props.item.artistName}</NavLink><br />
+          {props.item.hasOwnProperty('distance') && <><span>Distance&nbsp;(meters): </span>{props.item.distance}</>}
         </p>
       </div>
     </div>
