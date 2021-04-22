@@ -1,5 +1,6 @@
 const ArtistsDAO = require('../dao/ArtistsDAO');
 const CustomersDAO = require('../dao/CustomersDAO');
+const PostalCodesDAO = require('../dao/PostalCodesDAO');
 const express = require('express');
 const router = express.Router();
 
@@ -41,7 +42,26 @@ router.route('/:id?')
   .put(async function(req, res) {
     try {
       const { address, name, bio = '', picture = '' } = req.body;
-      address.location = { type: 'Point', coordinates: [-73.961704, 40.551234] };
+      const code = address.postalcode.trim().toUpperCase().substring(0, 3);
+      const city = address.city.trim();
+      // Get location from address
+      const locationResult = await Promise.all([
+        // Seach by postalCode + city to filter ambiguous postal codes (like L9X)
+        PostalCodesDAO.getLocationFromPostalCodeCity(code, city),
+        // Search by postalCode only to filter out ambiguous cities (like East York vs Toronto)
+        PostalCodesDAO.getLocationFromPostalCode(code)
+      ]);
+      let location = null;
+      if (locationResult[0]) {
+        location = locationResult[0].location;
+      } else if (locationResult[1]) {
+        location = locationResult[1].location;
+      }
+      if (!location) {
+        res.json({ status: false, message: 'Could not determine location from address.' });
+        return;
+      }
+      address.location = location;
       let result;
       if (req.user && req.user.type === 'artist') {
         result = await ArtistsDAO.updateProfile(req.user.typeId, address, name, bio, picture);
@@ -64,6 +84,7 @@ router.route('/:id?')
       res.json({ status: true, message: 'Profile successfully updated!' });
     } catch (e) {
       // Unexpected error
+      console.error(`Error occurred while updating artist profile! err=${e}`);
       res.status(500).json({ status: false, message: 'Error occurred while updating artist profile!' });
     }
   });
