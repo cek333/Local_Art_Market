@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import Address from '../components/Address';
+import Picture from '../components/Picture';
 import API from '../utils/API';
 
 function ProfileEdit(props) {
   const { type: propsType } = props.user;
   const { updateUser: propsUpdateUser } = props;
-  const [ profile, setProfile ] = useState({ name:'', bio:'', address: {
+  const [ profile, setProfile ] = useState({ name:'', bio:'', picture:'https://via.placeholder.com/200', address: {
       address_1:'', address_2:'', city:'', province:'', postalcode:'',
       country:'', phone_number:'', location:null }});
   const [ errorMsg, setErrorMsg ] = useState('');
@@ -16,17 +17,18 @@ function ProfileEdit(props) {
     API.getProfile((res) => {
       if (res.status) {
         // Ignore the bio field for customers
-        const { name, bio = '', address: {
-          address_1 = '',
-          address_2 = '',
-          city = '',
-          province = '',
-          postalcode = '',
-          country ='',
-          phone_number = '',
-          location = null
-        } } = res;
-        setProfile({ name, bio, address: {
+        const { name, bio = '', picture = 'https://via.placeholder.com/200',
+          address: {
+            address_1 = '',
+            address_2 = '',
+            city = '',
+            province = '',
+            postalcode = '',
+            country ='',
+            phone_number = '',
+            location = null
+          } } = res;
+        setProfile({ name, bio, picture, address: {
           address_1, address_2, city, province, postalcode,
           country, phone_number, location
         } });
@@ -52,6 +54,10 @@ function ProfileEdit(props) {
     const updatedAddress = { ...profile.address };
     updatedAddress[name] = value;
     setProfile({ ...profile, address: updatedAddress })
+  }
+
+  function handlePictureChange(src) {
+    setProfile({ ...profile, picture: src });
   }
 
   function handleSubmit(evt) {
@@ -82,6 +88,7 @@ function ProfileEdit(props) {
             <label htmlFor='bio'>Artist Bio</label>
             <textarea id='bio' name='bio' placeholder='Artist Bio'
               value={profile.bio} onChange={handleChange} required />
+            <Picture picUrl={profile.picture} onChange={handlePictureChange} />
           </>
         }
         <Address address={profile.address} onChange={handleAddressChange} />

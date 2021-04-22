@@ -1,5 +1,6 @@
 const ArtistsDAO = require('../dao/ArtistsDAO');
 const CustomersDAO = require('../dao/CustomersDAO');
+const PostalCodesDAO = require('../dao/PostalCodesDAO');
 const express = require('express');
 const router = express.Router();
 
@@ -8,9 +9,15 @@ router.route('/:id?')
     try {
       let result;
       if (req.params.id) {
-        // customer requesting artist's bio
-        result = await ArtistsDAO.getProfile(req.params.id);
-        res.json({ status: true, name: result.name, bio: result.bio });
+        if (req.user && req.user.type === 'artist') {
+          // artist requesting customer's info
+          result = await CustomersDAO.getProfile(req.params.id);
+          res.json({ status: true, name: result.name, phone_number: result.address.phone_number });
+        } else {
+          // customer requesting artist's bio
+          result = await ArtistsDAO.getProfile(req.params.id);
+          res.json({ status: true, name: result.name, bio: result.bio, picture: result.picture });
+        }
       } else {
         if (req.user && req.user.type === 'artist') {
           result = await ArtistsDAO.getProfile(req.user.typeId);
@@ -23,6 +30,7 @@ router.route('/:id?')
         const clientInfo = { name: result.name, address: result.address };
         if (req.user.type === 'artist') {
           clientInfo.bio = result.bio;
+          clientInfo.picture = result.picture;
         }
         res.json({ status: true, ...clientInfo });
       }
@@ -33,11 +41,30 @@ router.route('/:id?')
   })
   .put(async function(req, res) {
     try {
-      const { address, name, bio = '' } = req.body;
-      address.location = { type: 'Point', coordinates: [-73.961704, 40.551234] };
+      const { address, name, bio = '', picture = '' } = req.body;
+      const code = address.postalcode.trim().toUpperCase().substring(0, 3);
+      const city = address.city.trim();
+      // Get location from address
+      const locationResult = await Promise.all([
+        // Seach by postalCode + city to filter ambiguous postal codes (like L9X)
+        PostalCodesDAO.getLocationFromPostalCodeCity(code, city),
+        // Search by postalCode only to filter out ambiguous cities (like East York vs Toronto)
+        PostalCodesDAO.getLocationFromPostalCode(code)
+      ]);
+      let location = null;
+      if (locationResult[0]) {
+        location = locationResult[0].location;
+      } else if (locationResult[1]) {
+        location = locationResult[1].location;
+      }
+      if (!location) {
+        res.json({ status: false, message: 'Could not determine location from address.' });
+        return;
+      }
+      address.location = location;
       let result;
       if (req.user && req.user.type === 'artist') {
-        result = await ArtistsDAO.updateProfile(req.user.typeId, address, name, bio);
+        result = await ArtistsDAO.updateProfile(req.user.typeId, address, name, bio, picture);
       } else if (req.user && req.user.type === 'customer') {
         result = await CustomersDAO.updateProfile(req.user.typeId, address, name);
       } else {
@@ -45,14 +72,19 @@ router.route('/:id?')
         return;
       }
       // console.log(result);
-      if (result.modifiedCount === 1) {
-        res.json({ status: true, message: 'Profile successfully updated!' });
-      } else {
-        // Set status to 400: Bad Request
-        res.status(400).json({ status: false, message: 'Error occurred while updating artist profile!' });
-      }
+      // if (result.modifiedCount === 1) {
+      //   res.json({ status: true, message: 'Profile successfully updated!' });
+      // } else {
+      //   // Set status to 400: Bad Request
+      //   res.status(400).json({ status: false, message: 'Error occurred while updating artist profile!' });
+      // }
+
+      // If new data = old data, then result.modifiedCount = 0 (but result.matchedCount = 1)
+      //   Just assume success!
+      res.json({ status: true, message: 'Profile successfully updated!' });
     } catch (e) {
       // Unexpected error
+      console.error(`Error occurred while updating artist profile! err=${e}`);
       res.status(500).json({ status: false, message: 'Error occurred while updating artist profile!' });
     }
   });

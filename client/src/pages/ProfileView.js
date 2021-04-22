@@ -4,16 +4,17 @@ import API from '../utils/API';
 
 function ProfileView(props) {
   const { type: propsType } = props.user;
-  const [ profile, setProfile ] = useState({ name:'', bio:'', address: {location: null} });
+  const [ profile, setProfile ] = useState({ name:'', bio:'', picture:'https://via.placeholder.com/200',
+                                             address: {location: null} });
   const [ errorMsg, setErrorMsg ] = useState('');
   const history = useHistory();
 
   useEffect(function() {
     API.getProfile((res) => {
       if (res.status) {
-        // Ignore the bio field for customers
-        const { name, address, bio = '' } = res;
-        setProfile({ name, address, bio });
+        // Ignore the bio, picture field for customers
+        const { name, address, bio = '', picture = 'https://via.placeholder.com/200' } = res;
+        setProfile({ name, address, bio, picture });
       } else {
         setErrorMsg(res.message);
       }
@@ -25,7 +26,10 @@ function ProfileView(props) {
       <h3>Profile</h3>
       <p><span className='heading'>Name</span>: {profile.name}</p>
       {propsType === 'artist' &&
-        <p><span className='heading'>Bio</span>: {profile.bio}</p>
+        <>
+          <img src={profile.picture} alt='' />
+          <p><span className='heading'>Bio</span>: {profile.bio}</p>
+        </>
       }
       <p><span className='heading'>Address</span>:<br />
       {profile.address.location === null

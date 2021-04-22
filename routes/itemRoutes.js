@@ -16,8 +16,27 @@ router.route('/:id?')
       } else {
         if (req.user && req.user.type === 'artist') {
           result = await ItemsDAO.getItemsByArtist(req.user.typeId);
+          // Mirror structure returned by searchItems i.e. result = { items: [] }
+          result = { items: result };
         } else {
-          result = await ItemsDAO.getItems();
+          const {
+            searchTerm = '',
+            category = '',
+            priceLevel = '',
+            longitude = '',
+            latitude = ''
+          } = req.query;
+          let location = '';
+          if (longitude && latitude) {
+            location = {
+              type: 'Point',
+              coordinates: [Number(longitude), Number(latitude)]
+            };
+          }
+          result = await ItemsDAO.searchItems(searchTerm, category, priceLevel, location);
+          // Facet result is contained within array: result = [ { prices: ..., categories: ..., items: ... } ]
+          result = result[0];
+          // result = await ItemsDAO.getItems();
         }
         res.json(result);
       }

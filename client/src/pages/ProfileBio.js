@@ -11,8 +11,8 @@ function ProfileBio() {
   useEffect(function() {
     API.getArtistProfile(artistId, (res) => {
       if (res.status) {
-        const { name, bio } = res;
-        setProfile({ name, bio });
+        const { name, bio, picture = 'https://via.placeholder.com/200' } = res;
+        setProfile({ name, bio, picture });
       } else {
         setErrorMsg(res.message);
       }
@@ -22,7 +22,7 @@ function ProfileBio() {
   return (
     <div className='box box_center'>
       <h3>Artist Bio</h3>
-      <img src='https://via.placeholder.com/200' alt='' />
+      <img src={profile.picture} alt='' />
       <p><span className='heading'>Name</span>: {profile.name}</p>
       <p><span className='heading'>Bio</span>: {profile.bio}</p>
       <p className='errorMsg'>{errorMsg}</p>

@@ -15,17 +15,17 @@ class ArtistsDAO {
   }
 
   static createProfile() {
-    return artists.insertOne({ name: '', bio: '', address: { location: null } });
+    return artists.insertOne({ name: '', bio: '', picture: 'https://via.placeholder.com/200', address: { location: null } });
   }
 
   static getProfile(id) {
     return artists.findOne({ _id: ObjectId(id) });
   }
 
-  static updateProfile(id, address, name, bio) {
+  static updateProfile(id, address, name, bio, picture) {
     return artists.updateOne(
       { _id: ObjectId(id) },
-      { $set: { address, name, bio } }
+      { $set: { address, name, bio, picture } }
     );
   }
 

@@ -4,6 +4,7 @@ const CustomersDAO = require('./dao/CustomersDAO');
 const ItemsDAO = require('./dao/ItemsDAO');
 const OrdersDAO = require('./dao/OrdersDAO');
 const UsersDAO = require('./dao/UsersDAO');
+const PostalCodesDAO = require('./dao/PostalCodesDAO');
 const { MongoClient } = require('mongodb');
 require('dotenv').config();
 const path = require('path');
@@ -81,6 +82,7 @@ MongoClient.connect(
     await ItemsDAO.injectDB(client);
     await OrdersDAO.injectDB(client);
     await UsersDAO.injectDB(client);
+    await PostalCodesDAO.injectDB(client);
     app.listen(PORT, () => {
       console.log(`listening on http://localhost:${PORT}`);
     });

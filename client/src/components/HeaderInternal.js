@@ -22,7 +22,7 @@ function Header(props) {
   let cartLink;
   if (propsUser.type === 'customer') {
     if (propsCartCnt > 0) {
-      cartLink = <NavLink to='/cart' activeClassName='active'>Cart ({propsCartCnt})</NavLink>;
+      cartLink = <NavLink to='/cart' activeClassName='active'>Cart&nbsp;({propsCartCnt})</NavLink>;
     } else {
       cartLink = <NavLink to='/cart' activeClassName='active'>Cart</NavLink>;
     }

@@ -17,6 +17,24 @@ function fetchJSON(url, cb=noop, method='get', data={}) {
   })
 }
 
+async function fetchJSONSync(url, method='get', data={}) {
+  let settings = {
+    method,
+    headers: { 'Content-Type': 'application/json' }
+  };
+  if (method === 'post' || method === 'put') {
+    settings.body = JSON.stringify(data);
+  }
+  let result;
+  try {
+    result = fetch(url, settings).then(res => res.json());
+  } catch (err) {
+    console.log('[fetchJSONSync] err=', err);
+    result = [];
+  }
+  return result;
+}
+
 export default class API {
   // action: login, signup, logout
   static updateUser(action, email='', password='', type='customer', cb=noop) {
@@ -37,9 +55,28 @@ export default class API {
     fetchJSON(`/api/item/${itemId}`, cb, 'put', body);
   }
 
-  // Get all items (for customer), or list of items by artist (for artist)
+  // Get list of items by artist (for artist)
   static getItems(cb) {
     fetchJSON('/api/item', cb);
+  }
+
+  // Get/Search list of items (for customer)
+  static searchItems(term, category, price, location, cb) {
+    let queryParams = [];
+    if (term) {
+      queryParams.push(`searchTerm=${term}`);
+    }
+    if (category) {
+      queryParams.push(`category=${category}`);
+    }
+    if (price) {
+      queryParams.push(`priceLevel=${price}`);
+    }
+    if (location) {
+      queryParams.push(`longitude=${location.coordinates[0]}`);
+      queryParams.push(`latitude=${location.coordinates[1]}`);
+    }
+    fetchJSON(`/api/item?${queryParams.join('&')}`, cb);
   }
 
   // Get (single) item by itemId
@@ -56,6 +93,25 @@ export default class API {
     fetchJSON('/api/order', cb);
   }
 
+  static async createOrders(orders, cb) {
+    const result = await Promise.all(orders.map(order => fetchJSONSync('/api/order', 'post', order)));
+    let errors = '';
+    result.forEach(res => {
+      if (!res.status) {
+        errors += `${res.message}\n`;
+      }
+    });
+    if (errors.length > 0) {
+      cb({ status: false, message: errors.trim() });
+    } else {
+      cb({ status: true, message: 'Order Submitted!' });
+    }
+  }
+
+  static updateOrder(orderId, cb) {
+    fetchJSON(`/api/order/${orderId}`, cb, 'put');
+  }
+
   // PROFILES
   static getProfile(cb) {
     fetchJSON('/api/info', cb);
@@ -67,5 +123,9 @@ export default class API {
 
   static updateProfile(body, cb) {
     fetchJSON('/api/info', cb, 'put', body);
+  }
+
+  static getCustomerInfo(customerId, cb) {
+    fetchJSON(`/api/info/${customerId}`, cb);
   }
 }

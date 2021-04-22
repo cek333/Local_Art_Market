@@ -11,9 +11,9 @@ router.route('/:id?')
         result = await OrdersDAO.findOrder(req.params.id);
       } else {
         if (req.user && req.user.type === 'artist') {
-          result = await OrdersDAO.getOrdersByArtist(req.user.typeId);
+          result = await OrdersDAO.findOrdersByArtist(req.user.typeId);
         } else if (req.user && req.user.type === 'customer') {
-          result = await OrdersDAO.getOrdersByCustomer(req.user.typeId);
+          result = await OrdersDAO.findOrdersByCustomer(req.user.typeId);
         } else {
           result = [];
         }
@@ -27,12 +27,12 @@ router.route('/:id?')
   })
   .post(async function(req, res) {
     try {
-      console.log('post /api/orders/:', req.body);
+      // console.log('post /api/order/:', req.body);
       const { items, total, artistId, artistName } = req.body;
       await OrdersDAO.addOrder(items, total, req.user.typeId, req.user.name, artistId, artistName);
       // Update quantities for items
-      for (const item in items) {
-        await ItemsDAO.updateQuantity(item.id, item.quantity * -1);
+      for (const item of items) {
+        await ItemsDAO.updateQuantity(item.itemId, item.quantity * -1);
       }
       res.json({ status: true, message: 'Order successfully added!' });
     } catch (e) {
@@ -61,8 +61,8 @@ router.route('/:id?')
         const order = OrdersDAO.findOrder(req.params.id);
         if (order) {
           // Add items back to inventory
-          for (const item in order.items) {
-            await ItemsDAO.updateQuantity(item.id, item.quantity);
+          for (const item of order.items) {
+            await ItemsDAO.updateQuantity(item.itemId, item.quantity);
           }
           await OrdersDAO.deleteOrder(req.params.id);
           res.json({ status: true, message: 'Order successfully deleted!' });
