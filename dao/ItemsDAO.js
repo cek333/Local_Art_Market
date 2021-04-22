@@ -125,7 +125,7 @@ class ItemsDAO {
     if (location) {
       const sortStageDistance = {
         $geoNear: {
-          $near: location,
+          near: location,
           distanceField: 'distance',
           query: query,
           spherical: true
