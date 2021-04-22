@@ -80,7 +80,7 @@ function Browse(props) {
       <h3>Items For Sale</h3>
       {addItemLink}
       <div className={propsUser.type ==='artist' ? 'no-wrap' : 'wrap'}>
-        {itemList.lenght === 0 && searchBox}
+        {itemList.length === 0 && searchBox}
         <div>
           {itemList.length === 0
             ? <p>There are no art pieces for sale.</p>
