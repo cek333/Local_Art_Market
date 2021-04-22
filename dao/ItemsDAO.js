@@ -19,7 +19,7 @@ class ItemsDAO {
         }
         // Create an index
         try {
-          await items.createIndex({ category: 1, description: 'text' });
+          await items.createIndex({ name: 'text', description: 'text', artistName: 'text' });
           await items.createIndex({ location: '2dsphere' });
         } catch (e) {
           console.error(`Unable to create indexes: ${e}`);
